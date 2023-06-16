@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
@@ -42,7 +43,7 @@ class AllTasksFragment : Fragment() {
         initRecyclerView()
 
         binding.floatingActionButton.setOnClickListener {
-
+            findNavController().navigate(R.id.action_allTasksFragment_to_taskFragment)
         }
     }
 
