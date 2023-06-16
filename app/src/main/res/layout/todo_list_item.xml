@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/materialCheckBox"
+        style="@style/Widget.App.CheckBox"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/priorityImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/materialCheckBox"
+        app:layout_constraintStart_toEndOf="@+id/materialCheckBox"
+        app:layout_constraintTop_toTopOf="@+id/materialCheckBox"
+        tools:srcCompat="@drawable/ic_priority_high" />
+
+    <TextView
+        android:id="@+id/bodyTextView"
+        style="@style/TextStyle.Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="12dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto"
+        android:justificationMode="inter_word"
+        android:maxLines="3"
+        app:layout_constraintEnd_toStartOf="@+id/infoImageView"
+        app:layout_constraintStart_toEndOf="@+id/priorityImageView"
+        app:layout_constraintTop_toTopOf="@+id/materialCheckBox"
+        tools:text="@tools:sample/lorem/random" />
+
+    <TextView
+        android:id="@+id/dateDeadlineTextView"
+        style="@style/TextStyle.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="?attr/label_tertiary"
+        app:layout_constraintStart_toStartOf="@id/bodyTextView"
+        app:layout_constraintTop_toBottomOf="@id/bodyTextView"
+        tools:text="@tools:sample/date/ddmmyy" />
+
+    <ImageView
+        android:id="@+id/infoImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_info_outline"
+        app:tint="?attr/label_tertiary" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,76 +1,77 @@
 package com.example.todoapp.data.source
 
-import com.example.todoapp.data.models.Importance
+import android.util.Log
+import com.example.todoapp.data.models.Priority
 import com.example.todoapp.data.models.TodoItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Date
 
 class TodoItemsHardcodeDataSource : TodoItemsDataSource {
-    private val todoItems: MutableList<TodoItem> = mutableListOf(
+    private val todoItems = listOf(
         TodoItem(
             "1",
             "Купить кое-что",
-            Importance.MIDDLE,
+            Priority.MIDDLE,
             false, Date()
         ),
         TodoItem(
             "2",
             "Купить что-то, где-то, зачем-то, но зачем не очень понятно",
-            Importance.MIDDLE,
+            Priority.MIDDLE,
             false,
             Date()
         ),
         TodoItem(
             "3",
             "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрезается очень длинный текст, а дальше просто пойдет набор букв аафдлвоа афлоа фдоваф дла адфлоаоаа йоашйоцоа оо",
-            Importance.MIDDLE,
+            Priority.MIDDLE,
             false,
             Date()
         ),
         TodoItem(
             "4",
             "Купить что-то",
-            Importance.LOW,
+            Priority.LOW,
             false,
             Date()
         ),
         TodoItem(
             "5",
             "Купить что-то",
-            Importance.HIGH,
+            Priority.HIGH,
             false,
             Date()
         ),
         TodoItem(
             "6",
             "Купить что-то",
-            Importance.MIDDLE,
+            Priority.MIDDLE,
             true,
             Date()
         ),
         TodoItem(
             "7",
             "Закончить проект",
-            Importance.HIGH,
+            Priority.HIGH,
             false,
             Date(),
-            Date(2023, 6, 30),
+            Date(),
             Date()
         ),
         TodoItem(
             "8",
             "Поехать в отпуск",
-            Importance.MIDDLE,
+            Priority.MIDDLE,
             false,
             Date(),
-            Date(2023, 7, 15),
+            Date(),
             null
         ),
         TodoItem(
             "9",
             "Посмотреть новый фильм",
-            Importance.LOW,
+            Priority.LOW,
             false,
             Date(),
             null,
@@ -79,16 +80,16 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         TodoItem(
             "10",
             "Подготовиться к собеседованию",
-            Importance.HIGH,
+            Priority.HIGH,
             false,
             Date(),
-            Date(2023, 6, 20),
+            Date(),
             null
         ),
         TodoItem(
             "11",
             "Починить сломанную мебель",
-            Importance.MIDDLE,
+            Priority.MIDDLE,
             true,
             Date(),
             null,
@@ -97,7 +98,7 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         TodoItem(
             "12",
             "Прочитать новую книгу",
-            Importance.LOW,
+            Priority.LOW,
             false,
             Date(),
             null,
@@ -106,16 +107,16 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         TodoItem(
             "13",
             "Организовать день рождения",
-            Importance.HIGH,
+            Priority.HIGH,
             false,
             Date(),
-            Date(2023, 8, 10),
+            Date(),
             null
         ),
         TodoItem(
             "14",
             "Пойти на тренировку",
-            Importance.MIDDLE,
+            Priority.MIDDLE,
             false,
             Date(),
             null,
@@ -124,7 +125,7 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         TodoItem(
             "15",
             "Подготовить ужин",
-            Importance.LOW,
+            Priority.LOW,
             true,
             Date(),
             null,
@@ -133,19 +134,41 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         TodoItem(
             "16",
             "Посетить музей",
-            Importance.HIGH,
+            Priority.HIGH,
             false,
             Date(),
-            Date(2023, 7, 1),
+            Date(),
             null
         )
     )
 
-    override fun getAllTodoItems(): Flow<List<TodoItem>> {
-        return flow { emit(todoItems) }
+    private val todoItemsFlow = MutableStateFlow(todoItems)
+
+    override fun getAllTodoItems(): Flow<List<TodoItem>> = todoItemsFlow
+
+    override suspend fun addTodoItem(newTodoItem: TodoItem) {
+        val currentList = todoItemsFlow.value
+        val updatedList = currentList.toMutableList()
+        updatedList.add(0, newTodoItem)
+        todoItemsFlow.value = updatedList
     }
 
-    override suspend fun addTodoItem(todoItem: TodoItem) {
-        todoItems.add(todoItem)
+    override suspend fun toggleStatus(todoItem: TodoItem) {
+        val currentList = todoItemsFlow.value
+        val updatedList = currentList.toMutableList()
+        val index = updatedList.indexOf(todoItem)
+        Log.d("DS", "toggleStatus: ${updatedList[index].isDone}")
+        updatedList[index] = updatedList[index].copy(isDone = !todoItem.isDone)
+        Log.d("DS", "toggleStatus: ${updatedList[index].isDone}")
+        todoItemsFlow.value = updatedList.toMutableList()
+    }
+
+    override suspend fun removeTodoItem(todoItem: TodoItem) {
+        val currentList = todoItemsFlow.value
+        if (currentList.isNotEmpty()) {
+            val updatedList = currentList.toMutableList()
+            updatedList.remove(todoItem)
+            todoItemsFlow.value = updatedList
+        }
     }
 }

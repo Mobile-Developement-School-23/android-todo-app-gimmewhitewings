@@ -5,5 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface TodoItemsDataSource {
     fun getAllTodoItems(): Flow<List<TodoItem>>
-    suspend fun addTodoItem(todoItem: TodoItem)
+    suspend fun addTodoItem(newTodoItem: TodoItem)
+
+    suspend fun toggleStatus(todoItem: TodoItem)
+    suspend fun removeTodoItem(todoItem: TodoItem)
 }

@@ -9,7 +9,12 @@ class TodoItemsRepository(
     private val localDataSource: TodoItemsDataSource
 ) {
     fun getAllTodoItems(): Flow<List<TodoItem>> = localDataSource.getAllTodoItems()
+
     suspend fun addTodoItem(todoItem: TodoItem) {
         localDataSource.addTodoItem(todoItem)
+    }
+
+    suspend fun toggleIsDone(todoItem: TodoItem) {
+        localDataSource.toggleStatus(todoItem)
     }
 }

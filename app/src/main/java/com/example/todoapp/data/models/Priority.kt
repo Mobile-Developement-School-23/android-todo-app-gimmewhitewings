@@ -1,6 +1,6 @@
 package com.example.todoapp.data.models
 
-enum class Importance {
+enum class Priority {
     LOW,
     MIDDLE,
     HIGH
