@@ -29,10 +29,23 @@ class TodoViewModel : ViewModel() {
         }
     }
 
+    fun updateOrAddTodoItem(
+        todoItem: TodoItem
+    ) {
+        viewModelScope.launch {
+
+            repository.updateOrAddTodoItem(todoItem)
+        }
+    }
+
     fun getTodoItemById(id: String) {
         viewModelScope.launch {
             val todoItem = repository.getTodoItemById(id)
-            _selectedTodoItem.value = todoItem
+            if (todoItem != null) {
+                _selectedTodoItem.value = todoItem
+            } else {
+                _selectedTodoItem.value = null
+            }
         }
     }
 

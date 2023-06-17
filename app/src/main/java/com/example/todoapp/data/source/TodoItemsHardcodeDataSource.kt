@@ -152,6 +152,20 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         todoItemsFlow.value = updatedList
     }
 
+    override suspend fun updateOrAddTodoItem(todoItem: TodoItem) {
+        val currentList = todoItemsFlow.value
+        val updatedList = currentList.toMutableList()
+        val index = updatedList.indexOfFirst {
+            it.id == todoItem.id
+        }
+        if (index == -1) {
+            updatedList.add(0, todoItem)
+        } else {
+            updatedList[index] = todoItem
+        }
+        todoItemsFlow.value = updatedList
+    }
+
     override suspend fun getTodoItemById(itemId: String): TodoItem? {
         return todoItemsFlow.value.find { it.id == itemId }
     }

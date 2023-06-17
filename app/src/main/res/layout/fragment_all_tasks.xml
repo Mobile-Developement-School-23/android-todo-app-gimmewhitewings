@@ -94,6 +94,7 @@
                         tools:listitem="@layout/todo_list_item" />
 
                     <LinearLayout
+                        android:id="@+id/addNewTaskButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"

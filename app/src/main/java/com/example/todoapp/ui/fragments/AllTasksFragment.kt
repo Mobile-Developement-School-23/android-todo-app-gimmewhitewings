@@ -38,13 +38,21 @@ class AllTasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.amountCompletedTextView.text = getString(R.string.done_amount, Random.nextInt(5, 10))
+        binding.amountCompletedTextView.text =
+            getString(R.string.done_amount, Random.nextInt(5, 10))
 
         initRecyclerView()
 
-        binding.floatingActionButton.setOnClickListener {
-            findNavController().navigate(R.id.action_allTasksFragment_to_taskFragment)
+        binding.addNewTaskButton.setOnClickListener {
+            addNewTask()
         }
+        binding.floatingActionButton.setOnClickListener {
+            addNewTask()
+        }
+    }
+
+    private fun addNewTask() {
+        findNavController().navigate(R.id.action_allTasksFragment_to_taskFragment)
     }
 
     private fun initRecyclerView() {

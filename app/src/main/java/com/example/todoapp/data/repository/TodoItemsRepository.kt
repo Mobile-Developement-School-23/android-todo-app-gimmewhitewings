@@ -14,6 +14,9 @@ class TodoItemsRepository(
         localDataSource.updateTodoItem(todoItem)
     }
 
+    suspend fun updateOrAddTodoItem(todoItem: TodoItem) {
+        localDataSource.updateOrAddTodoItem(todoItem)
+    }
     suspend fun getTodoItemById(itemId: String): TodoItem? {
         return localDataSource.getTodoItemById(itemId)
     }

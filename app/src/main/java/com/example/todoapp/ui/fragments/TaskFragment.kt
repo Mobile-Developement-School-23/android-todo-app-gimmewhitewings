@@ -12,11 +12,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
 import com.example.todoapp.data.models.Importance
+import com.example.todoapp.data.models.TodoItem
 import com.example.todoapp.databinding.FragmentTaskBinding
 import com.example.todoapp.ui.TodoViewModel
 import com.example.todoapp.utils.resolveColorAttribute
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 
@@ -29,6 +32,9 @@ class TaskFragment : Fragment() {
     private val viewModel: TodoViewModel by activityViewModels()
 
     private lateinit var itemId: String
+    private var deadline: Date? = null
+    private var importance: Importance = Importance.COMMON
+    private var text: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +54,22 @@ class TaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.getTodoItemById(itemId)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getTodoItemById(itemId)
                 viewModel.selectedTodoItem.collect { todoItem ->
                     if (todoItem != null) {
                         binding.apply {
                             todoTextEditText.setText(todoItem.text)
+
+                            importanceButton.setOnClickListener {
+                                // show popup menu
+                                val popupMenu = androidx.appcompat.widget.PopupMenu(
+                                    requireContext(),
+                                    importanceButton
+                                )
+                            }
 
                             importanceTextView.text = when (todoItem.importance) {
                                 Importance.LOW -> getString(R.string.low)
@@ -63,19 +77,46 @@ class TaskFragment : Fragment() {
                                 Importance.HIGH -> getString(R.string.high)
                             }
 
+                            deadline = todoItem.deadline
+
                             deadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
                                 if (isChecked) {
+
+                                    if (deadline != null) {
+                                        val pattern = "dd MMM yyyy"
+                                        val formatter =
+                                            SimpleDateFormat(pattern, Locale.getDefault())
+                                        val dateText =
+                                            formatter.format(todoItem.deadline)
+                                        deadlineTextView.text = dateText
+                                    } else {
+                                        // show date picker
+                                        val datePicker =
+                                            MaterialDatePicker.Builder.datePicker()
+                                                .setTitleText(getString(R.string.deadline))
+                                                .setPositiveButtonText(getString(R.string.save))
+                                                .build()
+                                        datePicker.addOnPositiveButtonClickListener {
+                                            deadline = Date(it)
+                                            val pattern = "dd MMM yyyy"
+                                            val formatter =
+                                                SimpleDateFormat(pattern, Locale.getDefault())
+                                            val dateText =
+                                                formatter.format(it)
+                                            deadlineTextView.text = dateText
+                                        }
+                                        datePicker.show(
+                                            requireActivity().supportFragmentManager,
+                                            "datePicker"
+                                        )
+                                    }
                                     deadlineTextView.setTextColor(
                                         requireContext().resolveColorAttribute(
                                             R.attr.color_blue
                                         )
                                     )
-                                    val pattern = "dd MMM yyyy"
-                                    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
-                                    val dateText =
-                                        todoItem.deadline?.let { date -> formatter.format(date) }
-                                    deadlineTextView.text = dateText
                                 } else {
+                                    deadline = null
                                     deadlineTextView.text = getString(R.string.no)
                                     deadlineTextView.setTextColor(
                                         requireContext().resolveColorAttribute(

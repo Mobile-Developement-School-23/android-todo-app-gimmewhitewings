@@ -73,7 +73,7 @@ class TodoItemsAdapter(
                     }
 
                     else -> {
-
+                        importanceImageView.visibility = View.GONE
                     }
                 }
                 materialCheckBox.isErrorShown = todoItem.importance == Importance.HIGH
