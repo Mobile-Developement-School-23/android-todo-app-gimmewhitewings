@@ -38,7 +38,7 @@ class AllTasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.amountDoneTextView.text = getString(R.string.done_amount, Random.nextInt(5, 10))
+        binding.amountCompletedTextView.text = getString(R.string.done_amount, Random.nextInt(5, 10))
 
         initRecyclerView()
 
@@ -55,7 +55,10 @@ class AllTasksFragment : Fragment() {
 
         val todoItemsAdapter = TodoItemsAdapter(
             onItemClicked = { todoItem ->
-                // TODO: to second screen
+                val action = AllTasksFragmentDirections.actionAllTasksFragmentToTaskFragment(
+                    todoItemId = todoItem.id
+                )
+                findNavController().navigate(action)
             },
             onCheckboxToggle = { todoItem ->
                 viewModel.toggleIsDone(todoItem)

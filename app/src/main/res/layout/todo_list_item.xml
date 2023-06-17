@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp">
 
@@ -16,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/priorityImageView"
+        android:id="@+id/importanceImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -37,7 +40,7 @@
         android:justificationMode="inter_word"
         android:maxLines="3"
         app:layout_constraintEnd_toStartOf="@+id/infoImageView"
-        app:layout_constraintStart_toEndOf="@+id/priorityImageView"
+        app:layout_constraintStart_toEndOf="@+id/importanceImageView"
         app:layout_constraintTop_toTopOf="@+id/materialCheckBox"
         tools:text="@tools:sample/lorem/random" />
 

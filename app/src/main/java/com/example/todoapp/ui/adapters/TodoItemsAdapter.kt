@@ -1,6 +1,5 @@
 package com.example.todoapp.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
-import com.example.todoapp.data.models.Priority
+import com.example.todoapp.data.models.Importance
 import com.example.todoapp.data.models.TodoItem
 import com.example.todoapp.databinding.TodoListItemBinding
 import com.example.todoapp.utils.resolveColorAttribute
-import com.google.android.material.checkbox.MaterialCheckBox
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -43,10 +41,21 @@ class TodoItemsAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(todoItem: TodoItem) {
             binding.apply {
+                materialCheckBox.isChecked = todoItem.isCompleted
+                if (todoItem.isCompleted) {
+                    bodyTextView.setTextColor(
+                        binding.root.context.resolveColorAttribute(R.attr.label_tertiary)
+                    )
+                } else {
+                    bodyTextView.setTextColor(
+                        binding.root.context.resolveColorAttribute(R.attr.label_primary)
+                    )
+                }
+                bodyTextView.paint.isStrikeThruText = todoItem.isCompleted
 
-                when (todoItem.priority) {
-                    Priority.LOW -> {
-                        priorityImageView.setImageDrawable(
+                when (todoItem.importance) {
+                    Importance.LOW -> {
+                        importanceImageView.setImageDrawable(
                             ContextCompat.getDrawable(
                                 binding.root.context,
                                 R.drawable.ic_priority_low
@@ -54,59 +63,39 @@ class TodoItemsAdapter(
                         )
                     }
 
-                    Priority.HIGH -> {
-                        priorityImageView.setImageDrawable(
+                    Importance.HIGH -> {
+                        importanceImageView.setImageDrawable(
                             ContextCompat.getDrawable(
                                 binding.root.context,
                                 R.drawable.ic_priority_high
                             )
                         )
-                        materialCheckBox.isErrorShown = true
-                        materialCheckBox.addOnCheckedStateChangedListener { checkBox, state ->
-                            checkBox.isErrorShown = MaterialCheckBox.STATE_CHECKED != state
-                        }
                     }
 
-                    else -> {}
+                    else -> {
+
+                    }
+                }
+                materialCheckBox.isErrorShown = todoItem.importance == Importance.HIGH
+
+                materialCheckBox.setOnClickListener {
+                    onCheckboxToggle(todoItem)
                 }
 
-                materialCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        bodyTextView.setTextColor(
-                            binding.root.context.resolveColorAttribute(R.attr.label_tertiary)
-                        )
-                    } else {
-                        bodyTextView.setTextColor(
-                            binding.root.context.resolveColorAttribute(R.attr.label_primary)
-                        )
-                    }
-                    bodyTextView.paint.isStrikeThruText = isChecked
-                    // TODO set callback
-                    //onCheckboxToggle(todoItem)
-                }
-                materialCheckBox.isChecked = todoItem.isDone
                 bodyTextView.text = todoItem.text
 
 
-                if (todoItem.dateDeadline == null) {
+                if (todoItem.deadline == null) {
                     dateDeadlineTextView.visibility = View.GONE
                 } else {
                     val pattern = "dd MMM yyyy"
                     val formatter = SimpleDateFormat(pattern, Locale.getDefault())
-                    val dateText = todoItem.dateDeadline?.let { formatter.format(it) }
+                    val dateText = todoItem.deadline?.let { formatter.format(it) }
                     dateDeadlineTextView.text = dateText
                 }
 
             }
         }
-    }
-
-    override fun onCurrentListChanged(
-        previousList: MutableList<TodoItem>,
-        currentList: MutableList<TodoItem>
-    ) {
-        super.onCurrentListChanged(previousList, currentList)
-        Log.d("DS", "onCurrentListChanged: changed")
     }
 
     override fun onCreateViewHolder(

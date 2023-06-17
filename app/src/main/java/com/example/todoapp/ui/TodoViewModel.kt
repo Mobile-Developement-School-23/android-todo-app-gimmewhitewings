@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.todoapp.data.models.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
 import com.example.todoapp.data.source.TodoItemsHardcodeDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class TodoViewModel : ViewModel() {
@@ -12,9 +14,31 @@ class TodoViewModel : ViewModel() {
 
     var visibleTodoItems = repository.getAllTodoItems()
 
+    private val _selectedTodoItem: MutableStateFlow<TodoItem?> = MutableStateFlow(null)
+    val selectedTodoItem: Flow<TodoItem?> = _selectedTodoItem
+
     fun addNewTodoItem(todoItem: TodoItem) {
         viewModelScope.launch {
             repository.addTodoItem(todoItem)
+        }
+    }
+
+    fun deleteTodoItemById(itemId: String) {
+        viewModelScope.launch {
+            repository.deleteTodoItemById(itemId)
+        }
+    }
+
+    fun getTodoItemById(id: String) {
+        viewModelScope.launch {
+            val todoItem = repository.getTodoItemById(id)
+            _selectedTodoItem.value = todoItem
+        }
+    }
+
+    fun updateTodoItem(todoItem: TodoItem) {
+        viewModelScope.launch {
+            repository.updateTodoItem(todoItem)
         }
     }
 

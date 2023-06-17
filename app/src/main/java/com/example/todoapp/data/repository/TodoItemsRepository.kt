@@ -10,6 +10,18 @@ class TodoItemsRepository(
 ) {
     fun getAllTodoItems(): Flow<List<TodoItem>> = localDataSource.getAllTodoItems()
 
+    suspend fun updateTodoItem(todoItem: TodoItem) {
+        localDataSource.updateTodoItem(todoItem)
+    }
+
+    suspend fun getTodoItemById(itemId: String): TodoItem? {
+        return localDataSource.getTodoItemById(itemId)
+    }
+
+    suspend fun deleteTodoItemById(itemId: String) {
+        localDataSource.deleteTodoItemById(itemId)
+    }
+
     suspend fun addTodoItem(todoItem: TodoItem) {
         localDataSource.addTodoItem(todoItem)
     }

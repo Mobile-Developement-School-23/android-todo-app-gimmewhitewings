@@ -9,14 +9,24 @@
         android:id="@+id/allTasksFragment"
         android:name="com.example.todoapp.ui.fragments.AllTasksFragment"
         android:label="fragment_all_tasks"
-        tools:layout="@layout/fragment_all_tasks" >
+        tools:layout="@layout/fragment_all_tasks">
         <action
             android:id="@+id/action_allTasksFragment_to_taskFragment"
-            app:destination="@id/taskFragment" />
+            app:destination="@id/taskFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right">
+            <argument android:name="todoItemId" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
         android:name="com.example.todoapp.ui.fragments.TaskFragment"
         android:label="fragment_task"
-        tools:layout="@layout/fragment_task" />
+        tools:layout="@layout/fragment_task">
+        <argument
+            android:name="todoItemId"
+            app:argType="string" />
+    </fragment>
 </navigation>

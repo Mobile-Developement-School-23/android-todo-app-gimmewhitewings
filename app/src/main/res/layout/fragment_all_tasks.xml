@@ -39,7 +39,7 @@
                 app:layout_collapseMode="pin" />
 
             <CheckBox
-                android:id="@+id/showNotDoneItemsCheckBox"
+                android:id="@+id/showNotCompletedItemsCheckBox"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|bottom"
@@ -49,7 +49,7 @@
                 app:buttonTint="?attr/color_blue" />
 
             <TextView
-                android:id="@+id/amountDoneTextView"
+                android:id="@+id/amountCompletedTextView"
                 style="@style/TextStyle.Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
