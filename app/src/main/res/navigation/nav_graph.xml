@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/allTasksFragment">
+    app:startDestination="@id/tasksFragment">
 
     <fragment
-        android:id="@+id/allTasksFragment"
-        android:name="com.example.todoapp.ui.fragments.AllTasksFragment"
+        android:id="@+id/tasksFragment"
+        android:name="com.example.todoapp.ui.fragments.TasksFragment"
         android:label="fragment_all_tasks"
-        tools:layout="@layout/fragment_all_tasks">
+        tools:layout="@layout/fragment_tasks">
         <action
             android:id="@+id/action_allTasksFragment_to_taskFragment"
-            app:destination="@id/taskFragment"
+            app:destination="@id/addEditTaskFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -21,10 +21,10 @@
         </action>
     </fragment>
     <fragment
-        android:id="@+id/taskFragment"
-        android:name="com.example.todoapp.ui.fragments.TaskFragment"
+        android:id="@+id/addEditTaskFragment"
+        android:name="com.example.todoapp.ui.fragments.AddEditTaskFragment"
         android:label="fragment_task"
-        tools:layout="@layout/fragment_task">
+        tools:layout="@layout/fragment_add_edit_task">
         <argument
             android:name="todoItemId"
             app:argType="string" />

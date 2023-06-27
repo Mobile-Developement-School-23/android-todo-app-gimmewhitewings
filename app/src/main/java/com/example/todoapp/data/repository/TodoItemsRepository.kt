@@ -1,35 +1,46 @@
 package com.example.todoapp.data.repository
 
 import com.example.todoapp.data.models.TodoItem
-import com.example.todoapp.data.source.TodoItemsDataSource
+import com.example.todoapp.data.source.TodoItemsFakeDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 // For the future, when we'll have to implement both local and remote data sources
 class TodoItemsRepository(
-    private val localDataSource: TodoItemsDataSource
+    private val todoItemsFakeDataSource: TodoItemsFakeDataSource
 ) {
-    fun getAllTodoItems(): Flow<List<TodoItem>> = localDataSource.getAllTodoItems()
+    val todoItems: Flow<List<TodoItem>> = todoItemsFakeDataSource.todoItems
+    val uncompletedTodoItems: Flow<List<TodoItem>> = todoItemsFakeDataSource.todoItems
+        .map { list ->
+            list.filter { todoItem ->
+                !todoItem.isCompleted
+            }
+        }
+
+    suspend fun getUncompletedTodoItems(): Flow<List<TodoItem>> =
+        todoItemsFakeDataSource.getUncompletedTodoItems()
 
     suspend fun updateTodoItem(todoItem: TodoItem) {
-        localDataSource.updateTodoItem(todoItem)
+        todoItemsFakeDataSource.updateTodoItem(todoItem)
     }
 
     suspend fun updateOrAddTodoItem(todoItem: TodoItem) {
-        localDataSource.updateOrAddTodoItem(todoItem)
+        todoItemsFakeDataSource.updateOrAddTodoItem(todoItem)
     }
+
     suspend fun getTodoItemById(itemId: String): TodoItem? {
-        return localDataSource.getTodoItemById(itemId)
+        return todoItemsFakeDataSource.getTodoItemById(itemId)
     }
 
     suspend fun deleteTodoItemById(itemId: String) {
-        localDataSource.deleteTodoItemById(itemId)
+        todoItemsFakeDataSource.deleteTodoItemById(itemId)
     }
 
     suspend fun addTodoItem(todoItem: TodoItem) {
-        localDataSource.addTodoItem(todoItem)
+        todoItemsFakeDataSource.addTodoItem(todoItem)
     }
 
-    suspend fun toggleIsDone(todoItem: TodoItem) {
-        localDataSource.toggleStatus(todoItem)
+    suspend fun toggleTodoItemCompletionById(todoItemId: String) {
+        todoItemsFakeDataSource.toggleTodoItemCompletionById(todoItemId)
     }
 }

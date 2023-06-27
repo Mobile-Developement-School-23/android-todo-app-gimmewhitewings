@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/back_primary"
-    tools:context=".ui.fragments.TaskFragment">
+    tools:context=".ui.fragments.AddEditTaskFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="?attr/back_primary"
+        android:fitsSystemWindows="true"
         app:elevation="4dp"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/nestedScrollView">

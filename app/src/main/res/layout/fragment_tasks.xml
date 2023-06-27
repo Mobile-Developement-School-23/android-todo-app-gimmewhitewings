@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/back_primary"
-    app:statusBarBackground="?attr/back_primary"
-    tools:context=".ui.fragments.AllTasksFragment">
+    tools:context=".ui.fragments.TasksFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -14,13 +13,11 @@
         android:layout_height="wrap_content"
         android:backgroundTint="?attr/back_primary"
         android:fitsSystemWindows="true"
-        app:liftOnScroll="true"
-        app:statusBarForeground="?attr/back_primary">
+        app:liftOnScroll="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:backgroundTint="?attr/back_primary"
             android:fitsSystemWindows="true"
             app:collapsedTitleTextAppearance="@style/TextStyle.Title"
             app:expandedTitleMarginBottom="52dp"
@@ -38,8 +35,8 @@
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="pin" />
 
-            <CheckBox
-                android:id="@+id/showNotCompletedItemsCheckBox"
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/showCompletedItemsCheckBox"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|bottom"

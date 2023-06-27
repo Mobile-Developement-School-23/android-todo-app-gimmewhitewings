@@ -4,10 +4,11 @@ import com.example.todoapp.data.models.Importance
 import com.example.todoapp.data.models.TodoItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import java.util.Date
 
-class TodoItemsHardcodeDataSource : TodoItemsDataSource {
-    private val todoItems = listOf(
+class TodoItemsFakeDataSource : TodoItemsDataSource {
+    private val todoItemsList = listOf(
         TodoItem(
             "1",
             "Купить кое-что",
@@ -141,19 +142,27 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         )
     )
 
-    private val todoItemsFlow = MutableStateFlow(todoItems)
+    val todoItems = MutableStateFlow(todoItemsList)
+    val uncompletedTodoItems =
+        MutableStateFlow(todoItemsList.filter { todoItem -> !todoItem.isCompleted })
 
-    override fun getAllTodoItems(): Flow<List<TodoItem>> = todoItemsFlow
+    override suspend fun getAllTodoItems(): Flow<List<TodoItem>> = todoItems
+    override suspend fun getUncompletedTodoItems(): Flow<List<TodoItem>> =
+        todoItems.map {
+            it.filter { item ->
+                !item.isCompleted
+            }
+        }
 
     override suspend fun addTodoItem(newTodoItem: TodoItem) {
-        val currentList = todoItemsFlow.value
+        val currentList = todoItems.value
         val updatedList = currentList.toMutableList()
         updatedList.add(0, newTodoItem)
-        todoItemsFlow.value = updatedList
+        todoItems.value = updatedList
     }
 
     override suspend fun updateOrAddTodoItem(todoItem: TodoItem) {
-        val currentList = todoItemsFlow.value
+        val currentList = todoItems.value
         val updatedList = currentList.toMutableList()
         val index = updatedList.indexOfFirst {
             it.id == todoItem.id
@@ -163,44 +172,44 @@ class TodoItemsHardcodeDataSource : TodoItemsDataSource {
         } else {
             updatedList[index] = todoItem
         }
-        todoItemsFlow.value = updatedList
+        todoItems.value = updatedList
     }
 
     override suspend fun getTodoItemById(itemId: String): TodoItem? {
-        return todoItemsFlow.value.find { it.id == itemId }
+        return todoItems.value.find { it.id == itemId }
     }
 
     override suspend fun deleteTodoItemById(itemId: String) {
-        val currentList = todoItemsFlow.value
+        val currentList = todoItems.value
         val updatedList = currentList.toMutableList()
         updatedList.removeIf { it.id == itemId }
-        todoItemsFlow.value = updatedList
+        todoItems.value = updatedList
     }
 
     override suspend fun updateTodoItem(todoItem: TodoItem) {
-        val currentList = todoItemsFlow.value
+        val currentList = todoItems.value
         val updatedList = currentList.toMutableList()
         val index = updatedList.indexOf(todoItem)
         updatedList[index] = todoItem
-        todoItemsFlow.value = updatedList.toMutableList()
+        todoItems.value = updatedList.toMutableList()
     }
 
-    override suspend fun toggleStatus(todoItem: TodoItem) {
-        val currentList = todoItemsFlow.value
+    override suspend fun toggleTodoItemCompletionById(todoItemId: String) {
+        val currentList = todoItems.value
         val updatedList = currentList.toMutableList()
         val index = updatedList.indexOfFirst {
-            it.id == todoItem.id
+            it.id == todoItemId
         }
-        updatedList[index] = updatedList[index].copy(isCompleted = !todoItem.isCompleted)
-        todoItemsFlow.value = updatedList.toMutableList()
+        updatedList[index] = updatedList[index].copy(isCompleted = !updatedList[index].isCompleted)
+        todoItems.value = updatedList.toMutableList()
     }
 
     override suspend fun removeTodoItem(todoItem: TodoItem) {
-        val currentList = todoItemsFlow.value
+        val currentList = todoItems.value
         if (currentList.isNotEmpty()) {
             val updatedList = currentList.toMutableList()
             updatedList.remove(todoItem)
-            todoItemsFlow.value = updatedList
+            todoItems.value = updatedList
         }
     }
 }

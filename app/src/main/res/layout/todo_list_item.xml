@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="@+id/materialCheckBox"
         tools:srcCompat="@drawable/ic_priority_high" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/bodyTextView"
         style="@style/TextStyle.Body"
         android:layout_width="0dp"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="@+id/materialCheckBox"
         tools:text="@tools:sample/lorem/random" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/dateDeadlineTextView"
         style="@style/TextStyle.Subhead"
         android:layout_width="wrap_content"
