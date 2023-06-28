@@ -4,8 +4,8 @@ import java.util.Date
 
 data class TodoItem(
     val id: String,
-    val text: String,
-    val importance: Importance,
+    var text: String,
+    var importance: Importance,
     var isCompleted: Boolean,
     val createdAt: Date,
     var deadline: Date? = null,

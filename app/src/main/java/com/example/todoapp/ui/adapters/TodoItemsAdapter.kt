@@ -10,7 +10,8 @@ import com.example.todoapp.ui.TodoItemUiState
 
 class TodoItemsAdapter(
     private val viewModel: TasksViewModel,
-    todoItemDiffUtil: TodoItemDiffCalculator
+    todoItemDiffUtil: TodoItemDiffCalculator,
+    val onItemClicked: (String) -> Unit
 ) : ListAdapter<TodoItemUiState, TodoItemViewHolder>(todoItemDiffUtil) {
 
     override fun onCreateViewHolder(
@@ -29,5 +30,6 @@ class TodoItemsAdapter(
 
     override fun onBindViewHolder(holder: TodoItemViewHolder, position: Int) {
         holder.bind(getItem(position))
+        holder.itemView.setOnClickListener { onItemClicked(getItem(position).id) }
     }
 }

@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -13,13 +16,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
 import com.example.todoapp.data.models.Importance
 import com.example.todoapp.databinding.FragmentAddEditTaskBinding
-import com.example.todoapp.ui.TasksViewModel
-import com.example.todoapp.utils.resolveColorAttribute
+import com.example.todoapp.ui.AddEditTaskViewModel
+import com.example.todoapp.utils.DateFormatter
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 
 class AddEditTaskFragment : Fragment() {
@@ -28,17 +31,18 @@ class AddEditTaskFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val viewModel: TasksViewModel by activityViewModels()
+    private val viewModel: AddEditTaskViewModel by viewModels { AddEditTaskViewModel.Factory }
 
-    private lateinit var itemId: String
-    private var deadline: Date? = null
-    private var importance: Importance = Importance.COMMON
-    private var text: String = ""
+    private lateinit var datePicker: MaterialDatePicker<Long>
+    private var todoItemId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            itemId = it.getString("todoItemId").toString()
+        arguments?.let { bundle ->
+            todoItemId = bundle.getString("todoItemId")
+            if (todoItemId != null) {
+                viewModel.loadTodoItem(todoItemId!!)
+            }
         }
     }
 
@@ -52,98 +56,123 @@ class AddEditTaskFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//
-//        viewModel.getTodoItemById(itemId)
-//
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.selectedTodoItem.collect { todoItem ->
-//                    if (todoItem != null) {
-//                        binding.apply {
-//                            todoTextEditText.setText(todoItem.text)
-//
-//                            importanceButton.setOnClickListener {
-//                                // show popup menu
-//                                val popupMenu = androidx.appcompat.widget.PopupMenu(
-//                                    requireContext(),
-//                                    importanceButton
-//                                )
-//                            }
-//
-//                            importanceTextView.text = when (todoItem.importance) {
-//                                Importance.LOW -> getString(R.string.low)
-//                                Importance.COMMON -> getString(R.string.no)
-//                                Importance.HIGH -> getString(R.string.high)
-//                            }
-//
-//                            deadline = todoItem.deadline
-//
-//                            deadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
-//                                if (isChecked) {
-//
-//                                    if (deadline != null) {
-//                                        val pattern = "dd MMM yyyy"
-//                                        val formatter =
-//                                            SimpleDateFormat(pattern, Locale.getDefault())
-//                                        val dateText =
-//                                            formatter.format(todoItem.deadline)
-//                                        deadlineTextView.text = dateText
-//                                    } else {
-//                                        // show date picker
-//                                        val datePicker =
-//                                            MaterialDatePicker.Builder.datePicker()
-//                                                .setTitleText(getString(R.string.deadline))
-//                                                .setPositiveButtonText(getString(R.string.save))
-//                                                .build()
-//                                        datePicker.addOnPositiveButtonClickListener {
-//                                            deadline = Date(it)
-//                                            val pattern = "dd MMM yyyy"
-//                                            val formatter =
-//                                                SimpleDateFormat(pattern, Locale.getDefault())
-//                                            val dateText =
-//                                                formatter.format(it)
-//                                            deadlineTextView.text = dateText
-//                                        }
-//                                        datePicker.show(
-//                                            requireActivity().supportFragmentManager,
-//                                            "datePicker"
-//                                        )
-//                                    }
-//                                    deadlineTextView.setTextColor(
-//                                        requireContext().resolveColorAttribute(
-//                                            R.attr.color_blue
-//                                        )
-//                                    )
-//                                } else {
-//                                    deadline = null
-//                                    deadlineTextView.text = getString(R.string.no)
-//                                    deadlineTextView.setTextColor(
-//                                        requireContext().resolveColorAttribute(
-//                                            R.attr.label_tertiary
-//                                        )
-//                                    )
-//                                }
-//                            }
-//                            deadlineSwitch.isChecked = todoItem.deadline != null
-//                        }
-//                    }
-//                }
-//            }
-//        }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect {
+                    setUpText(it.text)
+                    setUpImportance(it.importance)
+                    setUpDeadline(it.deadline)
+                }
+            }
+        }
+
+        setUpImportancePopupMenu()
+        setUpDeleteButton()
+
+
+        binding.saveButton.setOnClickListener {
+            viewModel.saveTodoItem(todoItemId)
+            findNavController().popBackStack()
+        }
+
+        binding.closeButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.todoTextEditText.addTextChangedListener {
+            viewModel.setText(it.toString())
+        }
+
+        initDatePicker()
+
+        binding.deadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.setDate(Date())
+                binding.deadLineButton.apply {
+                    isFocusable = true
+                    isClickable = true
+                    setOnClickListener {
+                        datePicker.show(requireActivity().supportFragmentManager, "datePicker")
+                    }
+                }
+            } else {
+                binding.deadLineButton.apply {
+                    isFocusable = false
+                    isClickable = false
+                }
+                viewModel.setDate(null)
+            }
+        }
+    }
+
+    private fun setUpText(text: String) {
+        binding.todoTextEditText.apply {
+            if (!this.isFocused) {
+                this.setText(text)
+            }
+        }
+    }
+
+    private fun setUpDeleteButton() {
+        binding.deleteButton.apply {
+            isVisible = todoItemId != null
+            setOnClickListener {
+                viewModel.deleteTodoItem(todoItemId!!)
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun initDatePicker() {
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointForward.now())
+        datePicker =
+            MaterialDatePicker.Builder.datePicker()
+                .setTitleText(getString(R.string.deadline))
+                .setPositiveButtonText(getString(R.string.save))
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build()
+        datePicker.addOnPositiveButtonClickListener {
+            viewModel.setDate(Date(it))
+        }
+    }
+
+    private fun setUpImportancePopupMenu() {
+        binding.importanceButton.setOnClickListener {
+            val popupMenu = PopupMenu(requireContext(), binding.importanceButton)
+            popupMenu.menuInflater.inflate(R.menu.importance_popup_menu, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                val importance: Importance = when (menuItem.itemId) {
+                    R.id.high -> Importance.HIGH
+                    R.id.common -> Importance.COMMON
+                    R.id.low -> Importance.LOW
+                    else -> Importance.COMMON
+                }
+                viewModel.setImportance(importance)
+                true
+            }
+            popupMenu.show()
+        }
+    }
+
+    private fun setUpDeadline(deadline: Date?) {
         binding.apply {
-            saveButton.setOnClickListener {
-                findNavController().popBackStack()
+            if (deadline != null) {
+                deadlineSwitch.isChecked = true
+                deadlineTextView.text = DateFormatter.formatter.format(deadline)
+            } else {
+                deadlineSwitch.isChecked = false
+                deadlineTextView.text = ""
             }
+        }
+    }
 
-            closeButton.setOnClickListener {
-                findNavController().popBackStack()
-            }
-
-            deleteButton.setOnClickListener {
-                viewModel.deleteTodoItemById(itemId)
-                findNavController().popBackStack()
-            }
+    private fun setUpImportance(importance: Importance) {
+        binding.importanceTextView.text = when (importance) {
+            Importance.LOW -> getString(R.string.low)
+            Importance.COMMON -> getString(R.string.no)
+            Importance.HIGH -> getString(R.string.high)
         }
     }
 

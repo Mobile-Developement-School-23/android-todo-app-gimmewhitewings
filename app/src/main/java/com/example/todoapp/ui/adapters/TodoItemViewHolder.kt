@@ -1,6 +1,6 @@
 package com.example.todoapp.ui.adapters
 
-import android.widget.ImageView
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
@@ -10,8 +10,6 @@ import com.example.todoapp.ui.TasksViewModel
 import com.example.todoapp.ui.TodoItemUiState
 import com.example.todoapp.utils.DateFormatter
 import com.example.todoapp.utils.resolveColorAttribute
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.textview.MaterialTextView
 
 class TodoItemViewHolder(
     private val binding: TodoListItemBinding,
@@ -63,7 +61,10 @@ class TodoItemViewHolder(
                 importance == Importance.LOW || importance == Importance.HIGH
             when (importance) {
                 Importance.HIGH -> setImageResource(R.drawable.ic_priority_high)
-                Importance.COMMON -> {}
+                Importance.COMMON -> {
+                    visibility = View.INVISIBLE
+                }
+
                 Importance.LOW -> setImageResource(R.drawable.ic_priority_low)
             }
         }

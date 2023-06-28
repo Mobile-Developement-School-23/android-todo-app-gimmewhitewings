@@ -143,8 +143,6 @@ class TodoItemsFakeDataSource : TodoItemsDataSource {
     )
 
     val todoItems = MutableStateFlow(todoItemsList)
-    val uncompletedTodoItems =
-        MutableStateFlow(todoItemsList.filter { todoItem -> !todoItem.isCompleted })
 
     override suspend fun getAllTodoItems(): Flow<List<TodoItem>> = todoItems
     override suspend fun getUncompletedTodoItems(): Flow<List<TodoItem>> =
@@ -189,7 +187,7 @@ class TodoItemsFakeDataSource : TodoItemsDataSource {
     override suspend fun updateTodoItem(todoItem: TodoItem) {
         val currentList = todoItems.value
         val updatedList = currentList.toMutableList()
-        val index = updatedList.indexOf(todoItem)
+        val index = updatedList.indexOfFirst { it.id == todoItem.id }
         updatedList[index] = todoItem
         todoItems.value = updatedList.toMutableList()
     }

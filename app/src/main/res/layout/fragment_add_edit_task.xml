@@ -117,8 +117,10 @@
                 android:layout_marginHorizontal="16dp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/deadLineButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
                 android:paddingStart="16dp"
                 android:paddingTop="16dp"
                 android:paddingEnd="16dp"
@@ -157,33 +159,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <LinearLayout
+
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/deleteButton"
+                style="@style/TextStyle.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:orientation="horizontal"
-                android:paddingBottom="24dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="20dp"
-                    android:src="@drawable/ic_delete"
-                    app:tint="?attr/color_red" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/TextStyle.Body"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="22dp"
-                    android:text="@string/delete"
-                    android:textColor="?attr/color_red" />
-            </LinearLayout>
+                android:paddingStart="12dp"
+                android:paddingTop="22dp"
+                android:paddingBottom="24dp"
+                android:text="@string/delete"
+                android:textColor="?attr/color_red"
+                app:drawableStartCompat="@drawable/ic_delete"
+                app:drawableTint="?attr/color_red" />
 
 
         </LinearLayout>

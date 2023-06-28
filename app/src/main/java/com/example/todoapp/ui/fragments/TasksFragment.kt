@@ -52,6 +52,10 @@ class TasksFragment : Fragment() {
 
         initRecyclerView()
 
+        binding.showUncompletedItemsCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.showUncompletedTodoItems(isChecked)
+        }
+
         binding.addNewTaskButton.setOnClickListener {
             addNewTask()
         }
@@ -62,13 +66,18 @@ class TasksFragment : Fragment() {
     }
 
     private fun addNewTask() {
-        findNavController().navigate(R.id.action_allTasksFragment_to_taskFragment)
+        findNavController().navigate(R.id.addEditTask)
+    }
+
+    private fun editTask(todoItemId: String) {
+        val action = TasksFragmentDirections.addEditTask(todoItemId)
+        findNavController().navigate(action)
     }
 
     private fun initRecyclerView() {
-        adapter = TodoItemsAdapter(
-            viewModel, TodoItemDiffCalculator()
-        )
+        adapter = TodoItemsAdapter(viewModel, TodoItemDiffCalculator()) { todoItemId ->
+            editTask(todoItemId)
+        }
         binding.recyclerView.apply {
             layoutManager = object : LinearLayoutManager(requireContext()) {
                 override fun canScrollVertically(): Boolean = false
