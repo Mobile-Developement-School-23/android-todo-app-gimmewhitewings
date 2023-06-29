@@ -1,6 +1,6 @@
 package com.example.todoapp.data.source
 
-import com.example.todoapp.data.models.TodoItem
+import com.example.todoapp.data.model.TodoItem
 import kotlinx.coroutines.flow.Flow
 
 interface TodoItemsDataSource {

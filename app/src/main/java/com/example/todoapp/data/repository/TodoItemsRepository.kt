@@ -1,32 +1,50 @@
 package com.example.todoapp.data.repository
 
-import com.example.todoapp.data.models.TodoItem
-import com.example.todoapp.data.source.TodoItemsFakeDataSource
+import com.example.todoapp.data.local.dao.TodoItemsDao
+import com.example.todoapp.data.local.entity.TodoItemEntity
+import com.example.todoapp.data.local.entity.asExternalModel
+import com.example.todoapp.data.model.TodoItem
+import com.example.todoapp.data.model.asEntity
+import com.example.todoapp.data.remote.TodoApiService
+import com.example.todoapp.data.remote.asEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-// For the future, when we'll have to implement both local and remote data sources
 class TodoItemsRepository(
-    private val todoItemsFakeDataSource: TodoItemsFakeDataSource
+    private val todoItemsDao: TodoItemsDao,
+    private val todoApiService: TodoApiService
 ) {
-    val todoItems: Flow<List<TodoItem>> = todoItemsFakeDataSource.todoItems
+    suspend fun update() {
+        val response = todoApiService.getTodoItems()
+        if (response.isSuccessful) {
+            response.body()?.todoItemNetworkModelList?.forEach {
+                todoItemsDao.addTodoItem(it.asEntity())
+            }
+        }
+    }
+
+
+    val todoItems: Flow<List<TodoItem>> = todoItemsDao.getAllTodoItems().map {
+        it.map(TodoItemEntity::asExternalModel)
+    }
 
     suspend fun updateTodoItem(todoItem: TodoItem) {
-        todoItemsFakeDataSource.updateTodoItem(todoItem)
+        todoItemsDao.updateTodoItem(todoItem.asEntity())
     }
 
     suspend fun getTodoItemById(itemId: String): TodoItem? {
-        return todoItemsFakeDataSource.getTodoItemById(itemId)
+        return todoItemsDao.getTodoItemById(itemId)?.asExternalModel()
     }
 
     suspend fun deleteTodoItemById(itemId: String) {
-        todoItemsFakeDataSource.deleteTodoItemById(itemId)
+        todoItemsDao.deleteTodoItemById(itemId)
     }
 
     suspend fun addTodoItem(todoItem: TodoItem) {
-        todoItemsFakeDataSource.addTodoItem(todoItem)
+        todoItemsDao.addTodoItem(todoItem.asEntity())
     }
 
     suspend fun toggleTodoItemCompletionById(todoItemId: String) {
-        todoItemsFakeDataSource.toggleTodoItemCompletionById(todoItemId)
+        todoItemsDao.toggleTodoItemCompletionById(todoItemId)
     }
 }

@@ -14,7 +14,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-private const val BASE_URL = "https://beta.mrdekk.ru/todobackend"
+private const val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
 private const val AUTH_TOKEN = "calligraphic"
 private const val LAST_KNOWN_REVISION_HEADER = "X-Last-Known-Revision"
 
@@ -22,7 +22,9 @@ private val gson = Gson()
 
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(AuthInterceptor(AUTH_TOKEN))
-    .addInterceptor(HttpLoggingInterceptor())
+    .addInterceptor(HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    })
     .build()
 
 private val retrofit = Retrofit.Builder()
@@ -45,13 +47,13 @@ interface TodoApiService {
     @POST("list")
     suspend fun addTodoItem(
         @Header(LAST_KNOWN_REVISION_HEADER) revision: Int,
-        todoItemApiModel: TodoItemApiModel
+        todoItemNetworkModel: TodoItemNetworkModel
     ): Response<ApiItemResponse>
 
     @PUT("list/{id}")
     suspend fun editTodoItem(
         @Path("id") id: String,
-        todoItemApiModel: TodoItemApiModel
+        todoItemNetworkModel: TodoItemNetworkModel
     ): Response<ApiItemResponse>
 
     @DELETE("list/{id}")

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.todoapp.ToDoApplication
-import com.example.todoapp.data.models.TodoItem
+import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,11 +31,13 @@ class TasksViewModel(
     private lateinit var uncompletedTodoItems: List<TodoItem>
 
     init {
+
         fetchTodoItems()
     }
 
     fun fetchTodoItems() {
         viewModelScope.launch {
+            repository.update()
             repository.todoItems.collect { list ->
                 allTodoItems = list
                 uncompletedTodoItems = list.filter { !it.isCompleted }
@@ -62,7 +64,6 @@ class TasksViewModel(
         }
         updateTodoItemsList()
     }
-
 
 
     private fun TodoItem.convertToUiState(): TodoItemUiState {
