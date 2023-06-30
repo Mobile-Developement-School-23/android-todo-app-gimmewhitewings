@@ -28,7 +28,7 @@ fun TodoItemEntity.asNetworkModel(): TodoItemNetworkModel = TodoItemNetworkModel
     importance = when (importance) {
         Importance.LOW -> "low"
         Importance.COMMON -> "basic"
-        Importance.HIGH -> "high"
+        Importance.HIGH -> "important"
     },
     deadline = deadline,
     isCompleted = isCompleted,

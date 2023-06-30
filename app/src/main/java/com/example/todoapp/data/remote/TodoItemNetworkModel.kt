@@ -3,19 +3,19 @@ package com.example.todoapp.data.remote
 import com.example.todoapp.data.local.entity.TodoItemEntity
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.data.model.TodoItem
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 import java.util.Date
 
 data class TodoItemNetworkModel(
-    @SerializedName("id") val id: String,
-    @SerializedName("text") val text: String,
-    @SerializedName("importance") val importance: String,
-    @SerializedName("deadline") val deadline: Long?,
-    @SerializedName("done") val isCompleted: Boolean,
-    @SerializedName("color") val color: String? = "",
-    @SerializedName("created_at") val createdAt: Long,
-    @SerializedName("changed_at") val modifiedAt: Long?,
-    @SerializedName("last_updated_by") val lastUpdatedBy: String
+    @Json(name = "id") val id: String,
+    @Json(name = "text") val text: String,
+    @Json(name = "importance") val importance: String,
+    @Json(name = "deadline") val deadline: Long?,
+    @Json(name = "done") val isCompleted: Boolean,
+    @Json(name = "color") val color: String? = "",
+    @Json(name = "created_at") val createdAt: Long,
+    @Json(name = "changed_at") val modifiedAt: Long?,
+    @Json(name = "last_updated_by") val lastUpdatedBy: String
 )
 
 fun TodoItemNetworkModel.asExternalModel(): TodoItem {
@@ -40,7 +40,7 @@ fun TodoItemNetworkModel.asEntity() = TodoItemEntity(
     importance = when (importance) {
         "low" -> Importance.LOW
         "basic" -> Importance.COMMON
-        "high" -> Importance.HIGH
+        "important" -> Importance.HIGH
         else -> Importance.COMMON
     },
     deadline = deadline,

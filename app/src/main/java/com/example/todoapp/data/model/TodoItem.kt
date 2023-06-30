@@ -34,13 +34,17 @@ fun TodoItem.asNetworkModel(): TodoItemNetworkModel {
     return TodoItemNetworkModel(
         id = id,
         text = text,
-        importance = importance.name,
+        importance = when (importance) {
+            Importance.HIGH -> "important"
+            Importance.COMMON -> "basic"
+            Importance.LOW -> "low"
+        },
         deadline = deadline?.time,
         isCompleted = isCompleted,
         color = null, // Set color value as needed
         createdAt = createdAt.time,
-        modifiedAt = modifiedAt?.time,
-        lastUpdatedBy = ""
+        modifiedAt = modifiedAt?.time ?: Date().time,
+        lastUpdatedBy = "999"
     )
 }
 
