@@ -1,11 +1,7 @@
 package com.example.todoapp.data.remote
 
-import com.squareup.moshi.Moshi
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.example.todoapp.utils.LAST_KNOWN_REVISION_HEADER
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -14,27 +10,6 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-
-private const val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
-private const val AUTH_TOKEN = "calligraphic"
-private const val LAST_KNOWN_REVISION_HEADER = "X-Last-Known-Revision"
-
-private val moshi = Moshi.Builder()
-    .add(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory())
-    .build()
-
-val okHttpClient = OkHttpClient.Builder()
-    .addInterceptor(AuthInterceptor(AUTH_TOKEN))
-    .addInterceptor(HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    })
-    .build()
-
-private val retrofit = Retrofit.Builder()
-    .client(okHttpClient)
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .baseUrl(BASE_URL)
-    .build()
 
 
 interface TodoApiService {
@@ -67,6 +42,3 @@ interface TodoApiService {
     ): Response<ApiItemMessage>
 }
 
-object TodoApi {
-    val retrofitService: TodoApiService by lazy { retrofit.create(TodoApiService::class.java) }
-}

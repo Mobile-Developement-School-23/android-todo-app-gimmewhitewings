@@ -31,7 +31,6 @@ class TasksViewModel(
     private lateinit var uncompletedTodoItems: List<TodoItem>
 
     init {
-
         fetchTodoItems()
     }
 

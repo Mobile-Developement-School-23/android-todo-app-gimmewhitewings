@@ -4,6 +4,5 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 object DateFormatter {
-    val pattern = "dd MMM yyyy"
-    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    val formatter: SimpleDateFormat by lazy { SimpleDateFormat(DATE_PATTERN, Locale.getDefault()) }
 }

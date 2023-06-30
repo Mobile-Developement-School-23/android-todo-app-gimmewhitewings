@@ -1,5 +1,6 @@
 package com.example.todoapp.data.repository
 
+import com.example.todoapp.data.SharedPreferencesManager
 import com.example.todoapp.data.local.dao.TodoItemsDao
 import com.example.todoapp.data.local.entity.TodoItemEntity
 import com.example.todoapp.data.local.entity.asExternalModel
@@ -8,37 +9,48 @@ import com.example.todoapp.data.model.asNetworkModel
 import com.example.todoapp.data.remote.ApiItemMessage
 import com.example.todoapp.data.remote.TodoApiService
 import com.example.todoapp.data.remote.asEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class TodoItemsRepository(
     private val todoItemsDao: TodoItemsDao,
-    private val todoApiService: TodoApiService
-    //private val sharedPreferencesManager: SharedPreferencesManager
+    private val todoApiService: TodoApiService,
+    private val sharedPreferencesManager: SharedPreferencesManager
 ) {
+
+    private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
     private var revision: Int? = null
 
-    val todoItems: Flow<List<TodoItem>> = todoItemsDao.getAllTodoItems().map {
+    val todoItems: Flow<List<TodoItem>> = todoItemsDao.getAllTodoItemsStream().map {
         it.map(TodoItemEntity::asExternalModel)
     }
 
-    suspend fun update() {
-        val response = todoApiService.getTodoItems()
-        if (response.isSuccessful) {
+//    init {
+//        update()
+//    }
 
-            revision = response.body()?.revision
-            val networkIds = response.body()?.todoItemNetworkModelList?.map { it.id }
-            val dbIds = todoItemsDao.getIds()
+    fun update() {
+        ioScope.launch {
+            try {
+                val response = todoApiService.getTodoItems()
+                revision = response.body()?.revision
+                val remoteTodoItems =
+                    response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
+                val localTodoItems = todoItemsDao.getAllTodoItemsSnapshot()
 
-            networkIds?.let {
-                val needToDelete = dbIds.subtract(it.toSet())
-                needToDelete.forEach { id ->
-                    todoItemsDao.deleteTodoItemById(id)
+                remoteTodoItems?.let {
+                    todoItemsDao.upsertTodoItems(it)
+                    val todoItemsToDelete = localTodoItems.minus(remoteTodoItems)
+                    todoItemsDao.deleteTodoItems(todoItemsToDelete)
                 }
-            }
 
-            response.body()?.todoItemNetworkModelList?.forEach {
-                todoItemsDao.addTodoItem(it.asEntity())
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
@@ -50,6 +62,7 @@ class TodoItemsRepository(
             todoItem.id,
             ApiItemMessage(
                 todoItemNetworkModel = todoItem.asNetworkModel()
+                    .copy(lastUpdatedBy = sharedPreferencesManager.getDeviceId())
             )
         )
         update()
@@ -70,7 +83,9 @@ class TodoItemsRepository(
         (todoApiService.addTodoItem(
             revision!!,
             ApiItemMessage(
-                todoItemNetworkModel = todoItem.asNetworkModel(),
+                todoItemNetworkModel = todoItem.asNetworkModel().copy(
+                    lastUpdatedBy = sharedPreferencesManager.getDeviceId()
+                ),
             )
         ))
         update()
