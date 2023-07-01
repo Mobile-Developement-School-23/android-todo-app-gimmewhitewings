@@ -15,7 +15,7 @@ data class TodoItemNetworkModel(
     @Json(name = "color") val color: String? = "",
     @Json(name = "created_at") val createdAt: Long,
     @Json(name = "changed_at") val modifiedAt: Long?,
-    @Json(name = "last_updated_by") val lastUpdatedBy: String
+    @Json(name = "last_updated_by") val lastUpdatedBy: String = ""
 )
 
 fun TodoItemNetworkModel.asExternalModel(): TodoItem {

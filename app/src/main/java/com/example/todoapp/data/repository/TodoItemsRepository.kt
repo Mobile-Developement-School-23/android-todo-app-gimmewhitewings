@@ -4,9 +4,12 @@ import com.example.todoapp.data.SharedPreferencesManager
 import com.example.todoapp.data.local.dao.TodoItemsDao
 import com.example.todoapp.data.local.entity.TodoItemEntity
 import com.example.todoapp.data.local.entity.asExternalModel
+import com.example.todoapp.data.local.entity.asNetworkModel
 import com.example.todoapp.data.model.TodoItem
+import com.example.todoapp.data.model.asEntity
 import com.example.todoapp.data.model.asNetworkModel
 import com.example.todoapp.data.remote.ApiItemMessage
+import com.example.todoapp.data.remote.ApiListMessage
 import com.example.todoapp.data.remote.TodoApiService
 import com.example.todoapp.data.remote.asEntity
 import kotlinx.coroutines.CoroutineScope
@@ -30,9 +33,9 @@ class TodoItemsRepository(
         it.map(TodoItemEntity::asExternalModel)
     }
 
-//    init {
-//        update()
-//    }
+    init {
+        update()
+    }
 
     fun update() {
         ioScope.launch {
@@ -43,12 +46,14 @@ class TodoItemsRepository(
                     response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
                 val localTodoItems = todoItemsDao.getAllTodoItemsSnapshot()
 
-                remoteTodoItems?.let {
-                    todoItemsDao.upsertTodoItems(it)
-                    val todoItemsToDelete = localTodoItems.minus(remoteTodoItems)
-                    todoItemsDao.deleteTodoItems(todoItemsToDelete)
+                remoteTodoItems?.let { list ->
+                    todoItemsDao.upsertTodoItems(list)
+                    val todoItemsToDelete =
+                        localTodoItems.map { it.id }.minus(remoteTodoItems.map { it.id }.toSet())
+                    todoItemsToDelete.forEach {
+                        todoItemsDao.deleteTodoItemById(it)
+                    }
                 }
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -57,16 +62,38 @@ class TodoItemsRepository(
 
 
     suspend fun updateTodoItem(todoItem: TodoItem) {
-        todoApiService.editTodoItem(
-            revision!!,
-            todoItem.id,
-            ApiItemMessage(
-                todoItemNetworkModel = todoItem.asNetworkModel()
-                    .copy(lastUpdatedBy = sharedPreferencesManager.getDeviceId())
+        try {
+            todoApiService.editTodoItem(
+                revision!!,
+                todoItem.id,
+                ApiItemMessage(
+                    todoItemNetworkModel = todoItem.asNetworkModel()
+                        .copy(lastUpdatedBy = sharedPreferencesManager.getDeviceId())
+                )
             )
-        )
-        update()
-        //todoItemsDao.updateTodoItem(todoItem.asEntity())
+            update()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            todoItemsDao.updateTodoItem(todoItem.asEntity())
+        }
+    }
+
+    suspend fun patchTodoItems() {
+        try {
+            val todoItems = todoItemsDao.getAllTodoItemsSnapshot()
+            todoApiService.updateList(
+                0,
+                ApiListMessage(
+                    todoItemNetworkModelList = todoItems.map {
+                        it.asNetworkModel().copy(
+                            lastUpdatedBy = sharedPreferencesManager.getDeviceId()
+                        )
+                    }
+                ))
+            update()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     suspend fun getTodoItemById(itemId: String): TodoItem? {
@@ -74,26 +101,38 @@ class TodoItemsRepository(
     }
 
     suspend fun deleteTodoItemById(itemId: String) {
-        todoApiService.deleteTodoItem(revision!!, itemId)
-        update()
-        //todoItemsDao.deleteTodoItemById(itemId)
+        try {
+            todoApiService.deleteTodoItem(revision!!, itemId)
+            update()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            todoItemsDao.deleteTodoItemById(itemId)
+        }
     }
 
     suspend fun addTodoItem(todoItem: TodoItem) {
-        (todoApiService.addTodoItem(
-            revision!!,
-            ApiItemMessage(
-                todoItemNetworkModel = todoItem.asNetworkModel().copy(
-                    lastUpdatedBy = sharedPreferencesManager.getDeviceId()
-                ),
+        try {
+            todoApiService.addTodoItem(
+                revision!!,
+                ApiItemMessage(
+                    todoItemNetworkModel = todoItem.asNetworkModel().copy(
+                        lastUpdatedBy = sharedPreferencesManager.getDeviceId()
+                    ),
+                )
             )
-        ))
-        update()
-        //todoItemsDao.addTodoItem(todoItem.asEntity())
+            update()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            todoItemsDao.addTodoItem(todoItem.asEntity())
+        }
     }
 
     suspend fun toggleTodoItemCompletionById(todoItemId: String) {
         todoItemsDao.toggleTodoItemCompletionById(todoItemId)
-        updateTodoItem(getTodoItemById(todoItemId)!!)
+        try {
+            updateTodoItem(getTodoItemById(todoItemId)!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

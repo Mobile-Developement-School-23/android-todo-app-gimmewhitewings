@@ -17,4 +17,9 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
     }
+
+    override fun onStop() {
+        super.onStop()
+        (application as ToDoApplication).startUploadWorker()
+    }
 }

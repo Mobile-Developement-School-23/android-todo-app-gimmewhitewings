@@ -17,7 +17,10 @@ interface TodoApiService {
     suspend fun getTodoItems(): Response<ApiListMessage>
 
     @PATCH("list")
-    suspend fun updateList(@Header(LAST_KNOWN_REVISION_HEADER) revision: Int)
+    suspend fun updateList(
+        @Header(LAST_KNOWN_REVISION_HEADER) revision: Int,
+        @Body apiListMessage: ApiListMessage
+    ): Response<ApiListMessage>
 
     @GET("list/{id}")
     suspend fun getTodoItem(@Path("id") id: String): Response<ApiItemMessage>

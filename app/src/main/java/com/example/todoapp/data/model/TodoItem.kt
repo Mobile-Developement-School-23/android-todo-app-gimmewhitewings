@@ -27,7 +27,7 @@ fun TodoItem.asEntity(): TodoItemEntity = TodoItemEntity(
     deadline = deadline?.time,
     isCompleted = isCompleted,
     createdAt = createdAt.time,
-    modifiedAt = modifiedAt?.time
+    modifiedAt = modifiedAt?.time ?: createdAt.time
 )
 
 fun TodoItem.asNetworkModel(): TodoItemNetworkModel {
@@ -43,8 +43,7 @@ fun TodoItem.asNetworkModel(): TodoItemNetworkModel {
         isCompleted = isCompleted,
         color = null, // Set color value as needed
         createdAt = createdAt.time,
-        modifiedAt = modifiedAt?.time ?: Date().time,
-        lastUpdatedBy = "999"
+        modifiedAt = modifiedAt?.time ?: Date().time
     )
 }
 
