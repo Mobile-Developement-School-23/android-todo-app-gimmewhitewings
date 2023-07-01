@@ -8,14 +8,16 @@ import com.example.todoapp.data.local.entity.asNetworkModel
 import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.model.asEntity
 import com.example.todoapp.data.model.asNetworkModel
-import com.example.todoapp.data.remote.ApiItemMessage
-import com.example.todoapp.data.remote.ApiListMessage
 import com.example.todoapp.data.remote.TodoApiService
-import com.example.todoapp.data.remote.asEntity
+import com.example.todoapp.data.remote.models.ApiItemMessage
+import com.example.todoapp.data.remote.models.ApiListMessage
+import com.example.todoapp.data.remote.models.asEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -33,9 +35,8 @@ class TodoItemsRepository(
         it.map(TodoItemEntity::asExternalModel)
     }
 
-    init {
-        update()
-    }
+    private val _errorFlow = MutableStateFlow(false)
+    val errorFlow = _errorFlow.asStateFlow()
 
     fun update() {
         ioScope.launch {
@@ -54,7 +55,10 @@ class TodoItemsRepository(
                         todoItemsDao.deleteTodoItemById(it)
                     }
                 }
+
+                _errorFlow.value = false
             } catch (e: Exception) {
+                _errorFlow.value = true
                 e.printStackTrace()
             }
         }

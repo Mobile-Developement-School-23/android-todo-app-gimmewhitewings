@@ -11,8 +11,6 @@ import kotlinx.coroutines.withContext
 class UploadWorker(
     context: Context,
     workerParams: WorkerParameters,
-//    private val todoApiService: TodoApiService,
-//    private val todoItemsDao: TodoItemsDao
 ) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val todoItemsRepository = (applicationContext as ToDoApplication).repository

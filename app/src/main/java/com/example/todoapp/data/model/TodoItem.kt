@@ -1,7 +1,7 @@
 package com.example.todoapp.data.model
 
 import com.example.todoapp.data.local.entity.TodoItemEntity
-import com.example.todoapp.data.remote.TodoItemNetworkModel
+import com.example.todoapp.data.remote.models.TodoItemNetworkModel
 import java.util.Date
 
 enum class Importance {

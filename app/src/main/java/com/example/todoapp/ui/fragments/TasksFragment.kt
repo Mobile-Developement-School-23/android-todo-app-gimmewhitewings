@@ -1,6 +1,7 @@
 package com.example.todoapp.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,8 @@ class TasksFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
+                    Log.d("err", "err: ${it.showError}")
+                    showErrorUi(it.showError)
                     adapter.submitList(it.todoItemsList)
                     binding.amountCompletedTextView.text =
                         getString(R.string.done_amount, it.completedTodoItemsNumber)
@@ -62,6 +65,14 @@ class TasksFragment : Fragment() {
 
         binding.floatingActionButton.setOnClickListener {
             addNewTask()
+        }
+    }
+
+    private fun showErrorUi(showError: Boolean) {
+        binding.errorTextView.visibility = if (showError) View.VISIBLE else View.GONE
+        binding.refreshButton.visibility = if (showError) View.VISIBLE else View.GONE
+        binding.refreshButton.setOnClickListener {
+            viewModel.updateRepo()
         }
     }
 

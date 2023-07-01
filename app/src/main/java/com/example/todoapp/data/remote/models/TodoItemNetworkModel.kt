@@ -1,4 +1,4 @@
-package com.example.todoapp.data.remote
+package com.example.todoapp.data.remote.models
 
 import com.example.todoapp.data.local.entity.TodoItemEntity
 import com.example.todoapp.data.model.Importance

@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.data.model.TodoItem
-import com.example.todoapp.data.remote.TodoItemNetworkModel
+import com.example.todoapp.data.remote.models.TodoItemNetworkModel
 import java.util.Date
 
 @Entity(tableName = "todo_item")

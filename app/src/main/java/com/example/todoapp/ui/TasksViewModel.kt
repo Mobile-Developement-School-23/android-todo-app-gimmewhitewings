@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 data class TasksUiState(
     val todoItemsList: List<TodoItemUiState> = emptyList(),
     val completedTodoItemsNumber: Int = 0,
-    val showUncompletedItems: Boolean = false
+    val showUncompletedItems: Boolean = false,
+    val showError: Boolean = false
 )
 
 class TasksViewModel(
@@ -31,12 +32,25 @@ class TasksViewModel(
     private lateinit var uncompletedTodoItems: List<TodoItem>
 
     init {
+        viewModelScope.launch {
+            repository.errorFlow.collect { error ->
+                _uiState.update {
+                    it.copy(
+                        showError = error
+                    )
+                }
+            }
+        }
+        updateRepo()
         fetchTodoItems()
     }
 
-    fun fetchTodoItems() {
+    fun updateRepo() {
+        repository.update()
+    }
+
+    private fun fetchTodoItems() {
         viewModelScope.launch {
-            repository.update()
             repository.todoItems.collect { list ->
                 allTodoItems = list
                 uncompletedTodoItems = list.filter { !it.isCompleted }
