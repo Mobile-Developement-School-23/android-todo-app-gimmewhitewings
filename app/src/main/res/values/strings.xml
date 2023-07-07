@@ -13,4 +13,6 @@
     <string name="low">Низкий</string>
     <string name="no">Нет</string>
     <string name="high">Высокий</string>
+    <string name="network_error">Ошибка сети</string>
+    <string name="not_synchronized">Данные не синхронизированны</string>
 </resources>

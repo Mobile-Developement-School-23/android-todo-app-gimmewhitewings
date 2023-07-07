@@ -3,16 +3,17 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
+    id 'io.gitlab.arturbosch.detekt'
 }
 
 android {
     namespace 'com.example.todoapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.todoapp"
         minSdk 27
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -73,6 +74,8 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
+
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
 
 
     testImplementation 'junit:junit:4.13.2'

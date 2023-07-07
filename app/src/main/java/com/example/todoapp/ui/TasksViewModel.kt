@@ -33,10 +33,10 @@ class TasksViewModel(
 
     init {
         viewModelScope.launch {
-            repository.errorFlow.collect { error ->
+            repository.errorFlow.collect { result ->
                 _uiState.update {
                     it.copy(
-                        showError = error
+                        showError = result.isFailure
                     )
                 }
             }
@@ -46,7 +46,9 @@ class TasksViewModel(
     }
 
     fun updateRepo() {
-        repository.update()
+        viewModelScope.launch {
+            repository.update()
+        }
     }
 
     private fun fetchTodoItems() {
@@ -64,7 +66,7 @@ class TasksViewModel(
             it.copy(
                 todoItemsList = (if (it.showUncompletedItems) allTodoItems else uncompletedTodoItems)
                     .map { item -> item.convertToUiState() },
-                completedTodoItemsNumber = allTodoItems.count { item -> item.isCompleted }
+                completedTodoItemsNumber = allTodoItems.size - uncompletedTodoItems.size
             )
         }
     }

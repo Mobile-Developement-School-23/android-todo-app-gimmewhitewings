@@ -1,7 +1,7 @@
 package com.example.todoapp.data.model
 
 import com.example.todoapp.data.local.entity.TodoItemEntity
-import com.example.todoapp.data.remote.models.TodoItemNetworkModel
+import com.example.todoapp.data.remote.models.TodoItemDto
 import java.util.Date
 
 enum class Importance {
@@ -20,7 +20,7 @@ data class TodoItem(
     var modifiedAt: Date? = null
 )
 
-fun TodoItem.asEntity(): TodoItemEntity = TodoItemEntity(
+fun TodoItem.toEntity(): TodoItemEntity = TodoItemEntity(
     id = id,
     text = text,
     importance = importance,
@@ -30,8 +30,8 @@ fun TodoItem.asEntity(): TodoItemEntity = TodoItemEntity(
     modifiedAt = modifiedAt?.time ?: createdAt.time
 )
 
-fun TodoItem.asNetworkModel(): TodoItemNetworkModel {
-    return TodoItemNetworkModel(
+fun TodoItem.toDto(): TodoItemDto {
+    return TodoItemDto(
         id = id,
         text = text,
         importance = when (importance) {

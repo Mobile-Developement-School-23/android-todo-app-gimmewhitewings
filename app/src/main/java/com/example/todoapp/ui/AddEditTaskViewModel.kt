@@ -27,16 +27,20 @@ class AddEditTaskViewModel(
 ) : ViewModel() {
 
     private lateinit var editedItem: TodoItem
+    private var isItemLoaded = false
 
     fun loadTodoItem(todoItemId: String) {
-        viewModelScope.launch {
-            editedItem = repository.getTodoItemById(todoItemId)!!
-            _uiState.update {
-                it.copy(
-                    text = editedItem.text,
-                    importance = editedItem.importance,
-                    deadline = editedItem.deadline
-                )
+        if (!isItemLoaded) {
+            viewModelScope.launch {
+                editedItem = repository.getTodoItemById(todoItemId)!!
+                _uiState.update {
+                    it.copy(
+                        text = editedItem.text,
+                        importance = editedItem.importance,
+                        deadline = editedItem.deadline
+                    )
+                }
+                isItemLoaded = true
             }
         }
     }
@@ -67,7 +71,6 @@ class AddEditTaskViewModel(
         } else {
             updateTodoItem()
         }
-
     }
 
     private fun addNewTodoItem() {

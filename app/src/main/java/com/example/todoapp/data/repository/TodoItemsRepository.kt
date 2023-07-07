@@ -3,18 +3,16 @@ package com.example.todoapp.data.repository
 import com.example.todoapp.data.SharedPreferencesManager
 import com.example.todoapp.data.local.dao.TodoItemsDao
 import com.example.todoapp.data.local.entity.TodoItemEntity
-import com.example.todoapp.data.local.entity.asExternalModel
-import com.example.todoapp.data.local.entity.asNetworkModel
+import com.example.todoapp.data.local.entity.toDomain
+import com.example.todoapp.data.local.entity.toDto
 import com.example.todoapp.data.model.TodoItem
-import com.example.todoapp.data.model.asEntity
-import com.example.todoapp.data.model.asNetworkModel
+import com.example.todoapp.data.model.toDto
+import com.example.todoapp.data.model.toEntity
 import com.example.todoapp.data.remote.TodoApiService
 import com.example.todoapp.data.remote.models.ApiItemMessage
 import com.example.todoapp.data.remote.models.ApiListMessage
 import com.example.todoapp.data.remote.models.asEntity
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,119 +22,107 @@ import kotlinx.coroutines.launch
 class TodoItemsRepository(
     private val todoItemsDao: TodoItemsDao,
     private val todoApiService: TodoApiService,
-    private val sharedPreferencesManager: SharedPreferencesManager
+    private val sharedPreferencesManager: SharedPreferencesManager,
+    private val externalScope: CoroutineScope
 ) {
-
-    private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
+    @Volatile
     private var revision: Int? = null
 
-    val todoItems: Flow<List<TodoItem>> = todoItemsDao.getAllTodoItemsStream().map {
-        it.map(TodoItemEntity::asExternalModel)
-    }
-
-    private val _errorFlow = MutableStateFlow(false)
+    private val _errorFlow = MutableStateFlow<Result<Any>>(Result.success(true))
     val errorFlow = _errorFlow.asStateFlow()
 
-    fun update() {
-        ioScope.launch {
-            try {
-                val response = todoApiService.getTodoItems()
-                revision = response.body()?.revision
-                val remoteTodoItems =
-                    response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
-                val localTodoItems = todoItemsDao.getAllTodoItemsSnapshot()
+    val todoItems: Flow<List<TodoItem>> = todoItemsDao.getAllTodoItemsStream().map {
+        it.map(TodoItemEntity::toDomain)
+    }
 
-                remoteTodoItems?.let { list ->
-                    todoItemsDao.upsertTodoItems(list)
-                    val todoItemsToDelete =
-                        localTodoItems.map { it.id }.minus(remoteTodoItems.map { it.id }.toSet())
-                    todoItemsToDelete.forEach {
-                        todoItemsDao.deleteTodoItemById(it)
-                    }
+    suspend fun update() {
+        _errorFlow.value = externalScope.runCatching {
+            val response = todoApiService.getTodoItems()
+            revision = response.body()?.revision
+            val remoteTodoItems =
+                response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
+
+            val localTodoItems = todoItemsDao.getAllTodoItemsSnapshot()
+
+            remoteTodoItems?.let { list ->
+                todoItemsDao.upsertTodoItems(list)
+                val todoItemsToDelete =
+                    localTodoItems.map { it.id }.minus(remoteTodoItems.map { it.id }.toSet())
+                todoItemsToDelete.forEach {
+                    todoItemsDao.deleteTodoItemById(it)
                 }
-
-                _errorFlow.value = false
-            } catch (e: Exception) {
-                _errorFlow.value = true
-                e.printStackTrace()
             }
+            true
         }
     }
 
 
     suspend fun updateTodoItem(todoItem: TodoItem) {
-        try {
+        _errorFlow.value = externalScope.runCatching {
+            todoItemsDao.updateTodoItem(todoItem.toEntity())
             todoApiService.editTodoItem(
                 revision!!,
                 todoItem.id,
                 ApiItemMessage(
-                    todoItemNetworkModel = todoItem.asNetworkModel()
+                    todoItemNetworkModel = todoItem.toDto()
                         .copy(lastUpdatedBy = sharedPreferencesManager.getDeviceId())
                 )
             )
-            update()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            todoItemsDao.updateTodoItem(todoItem.asEntity())
         }
     }
 
     suspend fun patchTodoItems() {
-        try {
+        externalScope.launch {
             val todoItems = todoItemsDao.getAllTodoItemsSnapshot()
             todoApiService.updateList(
                 0,
                 ApiListMessage(
                     todoItemNetworkModelList = todoItems.map {
-                        it.asNetworkModel().copy(
+                        it.toDto().copy(
                             lastUpdatedBy = sharedPreferencesManager.getDeviceId()
                         )
                     }
                 ))
-            update()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
     suspend fun getTodoItemById(itemId: String): TodoItem? {
-        return todoItemsDao.getTodoItemById(itemId)?.asExternalModel()
+        return todoItemsDao.getTodoItemById(itemId)?.toDomain()
     }
 
     suspend fun deleteTodoItemById(itemId: String) {
-        try {
-            todoApiService.deleteTodoItem(revision!!, itemId)
-            update()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        _errorFlow.value = externalScope.runCatching {
             todoItemsDao.deleteTodoItemById(itemId)
+            todoApiService.deleteTodoItem(revision!!, itemId)
         }
     }
 
     suspend fun addTodoItem(todoItem: TodoItem) {
-        try {
+        _errorFlow.value = externalScope.runCatching {
+            todoItemsDao.addTodoItem(todoItem.toEntity())
             todoApiService.addTodoItem(
                 revision!!,
                 ApiItemMessage(
-                    todoItemNetworkModel = todoItem.asNetworkModel().copy(
+                    todoItemNetworkModel = todoItem.toDto().copy(
                         lastUpdatedBy = sharedPreferencesManager.getDeviceId()
                     ),
                 )
             )
-            update()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            todoItemsDao.addTodoItem(todoItem.asEntity())
         }
     }
 
     suspend fun toggleTodoItemCompletionById(todoItemId: String) {
-        todoItemsDao.toggleTodoItemCompletionById(todoItemId)
-        try {
-            updateTodoItem(getTodoItemById(todoItemId)!!)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        _errorFlow.value = externalScope.runCatching {
+            todoItemsDao.toggleTodoItemCompletionById(todoItemId)
+            val updatedItem = todoItemsDao.getTodoItemById(todoItemId)
+            todoApiService.editTodoItem(
+                revision!!,
+                todoItemId,
+                ApiItemMessage(
+                    todoItemNetworkModel = updatedItem?.toDto()
+                )
+            )
+            true
         }
     }
 }

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -69,8 +70,9 @@ class TasksFragment : Fragment() {
     }
 
     private fun showErrorUi(showError: Boolean) {
-        binding.errorTextView.visibility = if (showError) View.VISIBLE else View.GONE
-        binding.refreshButton.visibility = if (showError) View.VISIBLE else View.GONE
+        binding.errorTextView.isVisible = showError
+        binding.refreshButton.isVisible = showError
+        binding.errorTextView.text = getString(R.string.not_synchronized)
         binding.refreshButton.setOnClickListener {
             viewModel.updateRepo()
         }

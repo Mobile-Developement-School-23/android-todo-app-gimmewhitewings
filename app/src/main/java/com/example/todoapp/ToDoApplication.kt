@@ -20,7 +20,13 @@ import com.example.todoapp.data.remote.TodoApiService
 import com.example.todoapp.data.repository.TodoItemsRepository
 import com.example.todoapp.utils.AUTH_TOKEN
 import com.example.todoapp.utils.BASE_URL
+import com.example.todoapp.utils.HOURS_TO_UPDATE
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -29,7 +35,7 @@ import java.util.concurrent.TimeUnit
 
 class ToDoApplication : Application() {
     private val moshi = Moshi.Builder()
-        .add(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory())
+        .add(KotlinJsonAdapterFactory())
         .build()
 
     private val okHttpClient = OkHttpClient.Builder()
@@ -47,6 +53,7 @@ class ToDoApplication : Application() {
 
     private val todoApiService: TodoApiService by lazy { retrofit.create(TodoApiService::class.java) }
     private val db by lazy { TodoItemsDatabase.getDatabase(this) }
+    private val workManager by lazy { WorkManager.getInstance(applicationContext) }
 
     fun startUploadWorker() {
         val constraints = Constraints.Builder()
@@ -62,7 +69,7 @@ class ToDoApplication : Application() {
             )
             .build()
 
-        WorkManager.getInstance(applicationContext).enqueueUniqueWork(
+        workManager.enqueueUniqueWork(
             "upload",
             ExistingWorkPolicy.REPLACE,
             uploadWorkRequest
@@ -75,7 +82,7 @@ class ToDoApplication : Application() {
             .build()
 
         val downloadWorkRequest = PeriodicWorkRequestBuilder<DownloadWorker>(
-            8, TimeUnit.HOURS
+            HOURS_TO_UPDATE, TimeUnit.HOURS
         )
             .setConstraints(constraints)
             .setBackoffCriteria(
@@ -104,11 +111,18 @@ class ToDoApplication : Application() {
         )
     }
 
+    private val applicationScope = CoroutineScope(
+        Dispatchers.IO + SupervisorJob() + CoroutineName(
+            "AppScope"
+        )
+    )
+
     val repository: TodoItemsRepository by lazy {
         TodoItemsRepository(
             db.todoItemsDao(),
             todoApiService,
-            SharedPreferencesManager(sharedPreferences)
+            SharedPreferencesManager(sharedPreferences),
+            applicationScope
         )
     }
 }
