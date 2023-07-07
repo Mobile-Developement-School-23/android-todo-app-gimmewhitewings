@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.todoapp.ToDoApplication
-import com.example.todoapp.data.models.TodoItem
+import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 data class TasksUiState(
     val todoItemsList: List<TodoItemUiState> = emptyList(),
     val completedTodoItemsNumber: Int = 0,
-    val showUncompletedItems: Boolean = false
+    val showUncompletedItems: Boolean = false,
+    val showError: Boolean = false
 )
 
 class TasksViewModel(
@@ -31,10 +32,26 @@ class TasksViewModel(
     private lateinit var uncompletedTodoItems: List<TodoItem>
 
     init {
+        viewModelScope.launch {
+            repository.errorFlow.collect { result ->
+                _uiState.update {
+                    it.copy(
+                        showError = result.isFailure
+                    )
+                }
+            }
+        }
+        updateRepo()
         fetchTodoItems()
     }
 
-    fun fetchTodoItems() {
+    fun updateRepo() {
+        viewModelScope.launch {
+            repository.update()
+        }
+    }
+
+    private fun fetchTodoItems() {
         viewModelScope.launch {
             repository.todoItems.collect { list ->
                 allTodoItems = list
@@ -49,7 +66,7 @@ class TasksViewModel(
             it.copy(
                 todoItemsList = (if (it.showUncompletedItems) allTodoItems else uncompletedTodoItems)
                     .map { item -> item.convertToUiState() },
-                completedTodoItemsNumber = allTodoItems.count { item -> item.isCompleted }
+                completedTodoItemsNumber = allTodoItems.size - uncompletedTodoItems.size
             )
         }
     }
@@ -62,7 +79,6 @@ class TasksViewModel(
         }
         updateTodoItemsList()
     }
-
 
 
     private fun TodoItem.convertToUiState(): TodoItemUiState {

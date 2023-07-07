@@ -1,12 +1,13 @@
 package com.example.todoapp.data.source
 
-import com.example.todoapp.data.models.Importance
-import com.example.todoapp.data.models.TodoItem
+import com.example.todoapp.data.model.Importance
+import com.example.todoapp.data.model.TodoItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import java.util.Date
 
+
+@Deprecated("Hardcode")
 class TodoItemsFakeDataSource : TodoItemsDataSource {
     private val todoItemsList = listOf(
         TodoItem(
@@ -145,12 +146,6 @@ class TodoItemsFakeDataSource : TodoItemsDataSource {
     val todoItems = MutableStateFlow(todoItemsList)
 
     override suspend fun getAllTodoItems(): Flow<List<TodoItem>> = todoItems
-    override suspend fun getUncompletedTodoItems(): Flow<List<TodoItem>> =
-        todoItems.map {
-            it.filter { item ->
-                !item.isCompleted
-            }
-        }
 
     override suspend fun addTodoItem(newTodoItem: TodoItem) {
         val currentList = todoItems.value
@@ -159,7 +154,7 @@ class TodoItemsFakeDataSource : TodoItemsDataSource {
         todoItems.value = updatedList
     }
 
-    override suspend fun updateOrAddTodoItem(todoItem: TodoItem) {
+    suspend fun updateOrAddTodoItem(todoItem: TodoItem) {
         val currentList = todoItems.value
         val updatedList = currentList.toMutableList()
         val index = updatedList.indexOfFirst {

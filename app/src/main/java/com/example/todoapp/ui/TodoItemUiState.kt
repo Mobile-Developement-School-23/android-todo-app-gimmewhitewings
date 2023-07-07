@@ -1,6 +1,6 @@
 package com.example.todoapp.ui
 
-import com.example.todoapp.data.models.Importance
+import com.example.todoapp.data.model.Importance
 import java.util.Date
 
 

@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.todoapp.ToDoApplication
-import com.example.todoapp.data.models.Importance
-import com.example.todoapp.data.models.TodoItem
+import com.example.todoapp.data.model.Importance
+import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,16 +27,20 @@ class AddEditTaskViewModel(
 ) : ViewModel() {
 
     private lateinit var editedItem: TodoItem
+    private var isItemLoaded = false
 
     fun loadTodoItem(todoItemId: String) {
-        viewModelScope.launch {
-            editedItem = repository.getTodoItemById(todoItemId)!!
-            _uiState.update {
-                it.copy(
-                    text = editedItem.text,
-                    importance = editedItem.importance,
-                    deadline = editedItem.deadline
-                )
+        if (!isItemLoaded) {
+            viewModelScope.launch {
+                editedItem = repository.getTodoItemById(todoItemId)!!
+                _uiState.update {
+                    it.copy(
+                        text = editedItem.text,
+                        importance = editedItem.importance,
+                        deadline = editedItem.deadline
+                    )
+                }
+                isItemLoaded = true
             }
         }
     }
@@ -67,7 +71,6 @@ class AddEditTaskViewModel(
         } else {
             updateTodoItem()
         }
-
     }
 
     private fun addNewTodoItem() {

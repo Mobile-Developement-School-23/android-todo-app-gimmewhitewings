@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
-import com.example.todoapp.data.models.Importance
+import com.example.todoapp.data.model.Importance
 import com.example.todoapp.databinding.TodoListItemBinding
 import com.example.todoapp.ui.TasksViewModel
 import com.example.todoapp.ui.TodoItemUiState
