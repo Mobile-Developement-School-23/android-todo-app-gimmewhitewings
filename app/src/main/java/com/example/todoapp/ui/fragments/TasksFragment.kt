@@ -1,9 +1,11 @@
 package com.example.todoapp.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -43,6 +45,8 @@ class TasksFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
+                    Log.d("err", "err: ${it.showError}")
+                    showErrorUi(it.showError)
                     adapter.submitList(it.todoItemsList)
                     binding.amountCompletedTextView.text =
                         getString(R.string.done_amount, it.completedTodoItemsNumber)
@@ -62,6 +66,15 @@ class TasksFragment : Fragment() {
 
         binding.floatingActionButton.setOnClickListener {
             addNewTask()
+        }
+    }
+
+    private fun showErrorUi(showError: Boolean) {
+        binding.errorTextView.isVisible = showError
+        binding.refreshButton.isVisible = showError
+        binding.errorTextView.text = getString(R.string.not_synchronized)
+        binding.refreshButton.setOnClickListener {
+            viewModel.updateRepo()
         }
     }
 

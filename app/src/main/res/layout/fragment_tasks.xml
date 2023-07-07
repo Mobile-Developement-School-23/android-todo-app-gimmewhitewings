@@ -64,10 +64,27 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/errorTextView"
+                style="@style/TextStyle.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="Что-то пошло не так :(" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/refreshButton"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:icon="@drawable/baseline_refresh_24"
+                app:iconTint="?attr/color_blue" />
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Material3.CardView.Elevated"
@@ -78,7 +95,7 @@
                 android:backgroundTint="?attr/back_secondary"
                 android:paddingVertical="8dp">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -90,7 +107,7 @@
                         tools:itemCount="5"
                         tools:listitem="@layout/todo_list_item" />
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/addNewTaskButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -107,7 +124,7 @@
                             android:src="@drawable/ic_add"
                             app:tint="?attr/label_tertiary" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/TextStyle.Body"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -115,10 +132,10 @@
                             android:layout_marginStart="12dp"
                             android:text="@string/add_new"
                             android:textColor="?attr/label_tertiary" />
-                    </LinearLayout>
-                </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     </androidx.core.widget.NestedScrollView>

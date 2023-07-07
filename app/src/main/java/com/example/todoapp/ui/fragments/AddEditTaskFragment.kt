@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
-import com.example.todoapp.data.models.Importance
+import com.example.todoapp.data.model.Importance
 import com.example.todoapp.databinding.FragmentAddEditTaskBinding
 import com.example.todoapp.ui.AddEditTaskViewModel
 import com.example.todoapp.utils.DateFormatter
