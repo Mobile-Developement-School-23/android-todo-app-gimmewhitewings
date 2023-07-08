@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
 import com.example.todoapp.appComponent
 import com.example.todoapp.databinding.FragmentTasksBinding
-import com.example.todoapp.ui.fragments.tasks.viewmodel.TasksViewModel
 import com.example.todoapp.ui.fragments.tasks.adapter.TodoItemDiffCalculator
 import com.example.todoapp.ui.fragments.tasks.adapter.TodoItemsAdapter
+import com.example.todoapp.ui.fragments.tasks.viewmodel.TasksViewModel
 import kotlinx.coroutines.launch
 
 
@@ -48,7 +48,32 @@ class TasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
+        initRecyclerView()
+        bindUncompletedItemsCheckbox()
+        bindAddNewTaskButton()
+        bindFab()
+    }
 
+    private fun bindFab() {
+        binding.floatingActionButton.setOnClickListener {
+            addNewTask()
+        }
+    }
+
+    private fun bindAddNewTaskButton() {
+        binding.addNewTaskButton.setOnClickListener {
+            addNewTask()
+        }
+    }
+
+    private fun bindUncompletedItemsCheckbox() {
+        binding.showUncompletedItemsCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.showUncompletedTodoItems(isChecked)
+        }
+    }
+
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
@@ -59,20 +84,6 @@ class TasksFragment : Fragment() {
                         getString(R.string.done_amount, it.completedTodoItemsNumber)
                 }
             }
-        }
-
-        initRecyclerView()
-
-        binding.showUncompletedItemsCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.showUncompletedTodoItems(isChecked)
-        }
-
-        binding.addNewTaskButton.setOnClickListener {
-            addNewTask()
-        }
-
-        binding.floatingActionButton.setOnClickListener {
-            addNewTask()
         }
     }
 

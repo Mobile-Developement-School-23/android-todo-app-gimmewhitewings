@@ -1,7 +1,7 @@
-package com.example.todoapp.data.remote
+package com.example.todoapp.data.source.remote
 
-import com.example.todoapp.data.remote.models.ApiItemMessage
-import com.example.todoapp.data.remote.models.ApiListMessage
+import com.example.todoapp.data.source.remote.models.ApiItemMessage
+import com.example.todoapp.data.source.remote.models.ApiListMessage
 import com.example.todoapp.utils.LAST_KNOWN_REVISION_HEADER
 import retrofit2.Response
 import retrofit2.http.Body

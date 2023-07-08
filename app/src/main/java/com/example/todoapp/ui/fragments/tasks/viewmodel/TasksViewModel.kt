@@ -7,6 +7,7 @@ import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +36,8 @@ class TasksViewModel @AssistedInject constructor(
     private lateinit var allTodoItems: List<TodoItem>
     private lateinit var uncompletedTodoItems: List<TodoItem>
 
+    private var updateJob: Job? = null
+
     init {
         viewModelScope.launch {
             repository.errorFlow.collect { result ->
@@ -50,7 +53,8 @@ class TasksViewModel @AssistedInject constructor(
     }
 
     fun updateRepo() {
-        viewModelScope.launch {
+        updateJob?.cancel()
+        updateJob = viewModelScope.launch {
             repository.update()
         }
     }

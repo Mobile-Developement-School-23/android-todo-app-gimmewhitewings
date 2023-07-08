@@ -1,6 +1,6 @@
-package com.example.todoapp.data.remote.models
+package com.example.todoapp.data.source.remote.models
 
-import com.example.todoapp.data.local.entity.TodoItemEntity
+import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
 import com.example.todoapp.data.model.Importance
 import com.squareup.moshi.Json
 

@@ -1,4 +1,4 @@
-package com.example.todoapp.data.local.dao
+package com.example.todoapp.data.source.local.room.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
-import com.example.todoapp.data.local.entity.TodoItemEntity
+import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
 import kotlinx.coroutines.flow.Flow
 
 

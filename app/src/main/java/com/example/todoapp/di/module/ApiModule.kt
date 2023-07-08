@@ -1,6 +1,6 @@
 package com.example.todoapp.di.module
 
-import com.example.todoapp.data.remote.TodoApiService
+import com.example.todoapp.data.source.remote.TodoApiService
 import com.example.todoapp.di.scope.AppScope
 import com.example.todoapp.utils.BASE_URL
 import com.squareup.moshi.Moshi

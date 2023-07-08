@@ -1,4 +1,4 @@
-package com.example.todoapp.data.local
+package com.example.todoapp.data.source.local
 
 import android.content.SharedPreferences
 import java.util.UUID

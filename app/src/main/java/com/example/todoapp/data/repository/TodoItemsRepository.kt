@@ -1,18 +1,18 @@
 package com.example.todoapp.data.repository
 
 import android.util.Log
-import com.example.todoapp.data.local.SharedPreferencesManager
-import com.example.todoapp.data.local.dao.TodoItemsDao
-import com.example.todoapp.data.local.entity.TodoItemEntity
-import com.example.todoapp.data.local.entity.toDomain
-import com.example.todoapp.data.local.entity.toDto
+import com.example.todoapp.data.source.local.SharedPreferencesManager
+import com.example.todoapp.data.source.local.room.dao.TodoItemsDao
+import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
+import com.example.todoapp.data.source.local.room.entity.toDomain
+import com.example.todoapp.data.source.local.room.entity.toDto
 import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.model.toDto
 import com.example.todoapp.data.model.toEntity
-import com.example.todoapp.data.remote.TodoApiService
-import com.example.todoapp.data.remote.models.ApiItemMessage
-import com.example.todoapp.data.remote.models.ApiListMessage
-import com.example.todoapp.data.remote.models.asEntity
+import com.example.todoapp.data.source.remote.TodoApiService
+import com.example.todoapp.data.source.remote.models.ApiItemMessage
+import com.example.todoapp.data.source.remote.models.ApiListMessage
+import com.example.todoapp.data.source.remote.models.asEntity
 import com.example.todoapp.di.scope.AppScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

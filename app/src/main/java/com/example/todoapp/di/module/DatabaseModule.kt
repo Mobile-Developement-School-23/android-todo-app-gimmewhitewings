@@ -2,8 +2,8 @@ package com.example.todoapp.di.module
 
 import android.content.Context
 import androidx.room.Room
-import com.example.todoapp.data.local.dao.TodoItemsDao
-import com.example.todoapp.data.local.db.TodoItemsDatabase
+import com.example.todoapp.data.source.local.room.dao.TodoItemsDao
+import com.example.todoapp.data.source.local.room.db.TodoItemsDatabase
 import com.example.todoapp.di.scope.AppScope
 import dagger.Module
 import dagger.Provides

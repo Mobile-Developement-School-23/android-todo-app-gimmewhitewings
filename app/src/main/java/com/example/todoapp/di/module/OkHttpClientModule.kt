@@ -1,6 +1,6 @@
 package com.example.todoapp.di.module
 
-import com.example.todoapp.data.remote.AuthInterceptor
+import com.example.todoapp.data.source.remote.AuthInterceptor
 import com.example.todoapp.di.scope.AppScope
 import dagger.Module
 import dagger.Provides

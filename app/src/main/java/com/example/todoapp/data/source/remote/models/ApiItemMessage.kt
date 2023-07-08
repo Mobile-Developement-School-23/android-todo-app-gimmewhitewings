@@ -1,4 +1,4 @@
-package com.example.todoapp.data.remote.models
+package com.example.todoapp.data.source.remote.models
 
 import com.squareup.moshi.Json
 

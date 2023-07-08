@@ -1,4 +1,4 @@
-package com.example.todoapp.data.remote
+package com.example.todoapp.data.source.remote
 
 import com.example.todoapp.utils.AUTH_TOKEN
 import okhttp3.Interceptor

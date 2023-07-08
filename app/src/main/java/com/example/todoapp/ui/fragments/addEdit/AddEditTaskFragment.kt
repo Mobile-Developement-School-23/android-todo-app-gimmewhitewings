@@ -63,35 +63,18 @@ class AddEditTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
-                    setUpText(it.text)
-                    setUpImportance(it.importance)
-                    setUpDeadline(it.deadline)
-                }
-            }
-        }
+        observeViewModel()
 
-        setUpImportancePopupMenu()
-        setUpDeleteButton()
-
-
-        binding.saveButton.setOnClickListener {
-            viewModel.saveTodoItem(todoItemId)
-            findNavController().popBackStack()
-        }
-
-        binding.closeButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        binding.todoTextEditText.addTextChangedListener {
-            viewModel.setText(it.toString())
-        }
-
+        bindImportancePopupMenu()
+        bindDeleteButton()
+        bindSaveButton()
+        bindCloseButton()
+        bindEditText()
         initDatePicker()
+        bindDeadlineSwitch()
+    }
 
+    private fun bindDeadlineSwitch() {
         binding.deadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.setDate(Date())
@@ -112,6 +95,37 @@ class AddEditTaskFragment : Fragment() {
         }
     }
 
+    private fun bindEditText() {
+        binding.todoTextEditText.addTextChangedListener {
+            viewModel.setText(it.toString())
+        }
+    }
+
+    private fun bindCloseButton() {
+        binding.closeButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun bindSaveButton() {
+        binding.saveButton.setOnClickListener {
+            viewModel.saveTodoItem(todoItemId)
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect {
+                    setUpText(it.text)
+                    setUpImportance(it.importance)
+                    setUpDeadline(it.deadline)
+                }
+            }
+        }
+    }
+
     private fun setUpText(text: String) {
         binding.todoTextEditText.apply {
             if (!this.isFocused) {
@@ -120,7 +134,7 @@ class AddEditTaskFragment : Fragment() {
         }
     }
 
-    private fun setUpDeleteButton() {
+    private fun bindDeleteButton() {
         binding.deleteButton.apply {
             isVisible = todoItemId != null
             setOnClickListener {
@@ -144,7 +158,7 @@ class AddEditTaskFragment : Fragment() {
         }
     }
 
-    private fun setUpImportancePopupMenu() {
+    private fun bindImportancePopupMenu() {
         binding.importanceButton.setOnClickListener {
             val popupMenu = PopupMenu(requireContext(), binding.importanceButton)
             popupMenu.menuInflater.inflate(R.menu.importance_popup_menu, popupMenu.menu)

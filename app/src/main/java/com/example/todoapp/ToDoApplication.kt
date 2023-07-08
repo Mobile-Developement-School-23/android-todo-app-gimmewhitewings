@@ -10,8 +10,8 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.todoapp.data.DownloadWorker
-import com.example.todoapp.data.UploadWorker
+import com.example.todoapp.data.background.DownloadWorker
+import com.example.todoapp.data.background.UploadWorker
 import com.example.todoapp.di.component.AppComponent
 import com.example.todoapp.di.component.DaggerAppComponent
 import com.example.todoapp.di.module.AppModule

@@ -1,11 +1,11 @@
-package com.example.todoapp.data.local.entity
+package com.example.todoapp.data.source.local.room.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.data.model.TodoItem
-import com.example.todoapp.data.remote.models.TodoItemDto
+import com.example.todoapp.data.source.remote.models.TodoItemDto
 import java.util.Date
 
 @Entity(tableName = "todo_item")

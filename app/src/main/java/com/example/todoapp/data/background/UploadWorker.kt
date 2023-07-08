@@ -1,4 +1,4 @@
-package com.example.todoapp.data
+package com.example.todoapp.data.background
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -8,17 +8,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class DownloadWorker @Inject constructor(
+
+class UploadWorker @Inject constructor(
     context: Context,
     workerParams: WorkerParameters,
     private val repository: TodoItemsRepository
-) :
-    CoroutineWorker(
-        context,
-        workerParams
-    ) {
+) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         try {
+            repository.patchTodoItems()
             repository.update()
             return@withContext Result.success()
         } catch (e: Exception) {
