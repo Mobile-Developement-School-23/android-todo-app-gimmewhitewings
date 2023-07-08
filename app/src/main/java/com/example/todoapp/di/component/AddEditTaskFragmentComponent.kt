@@ -7,7 +7,6 @@ import dagger.Subcomponent
 @Subcomponent
 @AddEditScope
 interface AddEditTaskFragmentComponent {
-
     @AddEditScope
     fun provideAddEditTaskViewModel(): AddEditTaskViewModel.AddEditTasksViewModelFactory
 }

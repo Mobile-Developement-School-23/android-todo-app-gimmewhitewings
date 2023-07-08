@@ -72,7 +72,6 @@ class TodoItemViewHolder(
                 Importance.COMMON -> {
                     visibility = View.INVISIBLE
                 }
-
                 Importance.LOW -> setImageResource(R.drawable.ic_priority_low)
             }
         }

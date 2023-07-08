@@ -1,14 +1,13 @@
 package com.example.todoapp.data.repository
 
-import android.util.Log
+import com.example.todoapp.data.model.TodoItem
+import com.example.todoapp.data.model.toDto
+import com.example.todoapp.data.model.toEntity
 import com.example.todoapp.data.source.local.SharedPreferencesManager
 import com.example.todoapp.data.source.local.room.dao.TodoItemsDao
 import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
 import com.example.todoapp.data.source.local.room.entity.toDomain
 import com.example.todoapp.data.source.local.room.entity.toDto
-import com.example.todoapp.data.model.TodoItem
-import com.example.todoapp.data.model.toDto
-import com.example.todoapp.data.model.toEntity
 import com.example.todoapp.data.source.remote.TodoApiService
 import com.example.todoapp.data.source.remote.models.ApiItemMessage
 import com.example.todoapp.data.source.remote.models.ApiListMessage
@@ -40,10 +39,8 @@ class TodoItemsRepository @Inject constructor(
     }
 
     suspend fun update() {
-        Log.d("update", "update: called")
         _errorFlow.value = externalScope.runCatching {
             val response = todoApiService.getTodoItems()
-            Log.d("update", "update: ${response.isSuccessful}")
             revision = response.body()?.revision
             val remoteTodoItems =
                 response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
@@ -53,7 +50,7 @@ class TodoItemsRepository @Inject constructor(
             remoteTodoItems?.let { list ->
                 todoItemsDao.upsertTodoItems(list)
                 val todoItemsToDelete =
-                    localTodoItems.map { it.id }.minus(remoteTodoItems.map { it.id }.toSet())
+                    localTodoItems.map { it.id }.minus(list.map { it.id }.toSet())
                 todoItemsToDelete.forEach {
                     todoItemsDao.deleteTodoItemById(it)
                 }

@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-@Module
+@Module(includes = [OkHttpClientModule::class])
 object ApiModule {
     @AppScope
     @Provides

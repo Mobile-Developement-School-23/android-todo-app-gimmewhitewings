@@ -1,6 +1,5 @@
 package com.example.todoapp.ui.activity.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,7 +35,6 @@ class ActivityViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch {
             repository.errorFlow.collect { result ->
-                Log.e("dddd", "ddd: ${result.exceptionOrNull()?.message}")
                 _errorState.update {
                     it.copy(
                         isErrorShown = result.isFailure,
