@@ -11,7 +11,7 @@ import com.example.todoapp.data.source.local.room.entity.toDto
 import com.example.todoapp.data.source.remote.TodoApiService
 import com.example.todoapp.data.source.remote.models.ApiItemMessage
 import com.example.todoapp.data.source.remote.models.ApiListMessage
-import com.example.todoapp.data.source.remote.models.asEntity
+import com.example.todoapp.data.source.remote.models.toEntity
 import com.example.todoapp.di.scope.AppScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +21,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+/**
+ * Todo items repository - executes data operations
+ *
+ * @property todoItemsDao
+ * @property todoApiService
+ * @property sharedPreferencesManager
+ * @property externalScope
+ * @constructor Create empty Todo items repository
+ */
 @AppScope
 class TodoItemsRepository @Inject constructor(
     private val todoItemsDao: TodoItemsDao,
@@ -43,7 +53,7 @@ class TodoItemsRepository @Inject constructor(
             val response = todoApiService.getTodoItems()
             revision = response.body()?.revision
             val remoteTodoItems =
-                response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
+                response.body()?.todoItemNetworkModelList?.map { it.toEntity() }
 
             val localTodoItems = todoItemsDao.getAllTodoItemsSnapshot()
 

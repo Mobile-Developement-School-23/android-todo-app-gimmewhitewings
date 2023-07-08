@@ -8,7 +8,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
+/**
+ * Upload worker - updates server data on activity stop
+ *
+ * @property repository
+ * @constructor
+ *
+ * @param context
+ * @param workerParams
+ */
 class UploadWorker @Inject constructor(
     context: Context,
     workerParams: WorkerParameters,

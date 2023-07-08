@@ -8,6 +8,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * Download worker
+ * Background worker, updates data every 8 hours
+ * @property repository
+ * @constructor
+ *
+ * @param context
+ * @param workerParams
+ */
 class DownloadWorker @Inject constructor(
     context: Context,
     workerParams: WorkerParameters,

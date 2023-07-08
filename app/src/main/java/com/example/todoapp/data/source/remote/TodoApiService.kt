@@ -24,9 +24,6 @@ interface TodoApiService {
         @Body apiListMessage: ApiListMessage
     ): Response<ApiListMessage>
 
-    @GET("list/{id}")
-    suspend fun getTodoItem(@Path("id") id: String): Response<ApiItemMessage>
-
     @POST("list")
     suspend fun addTodoItem(
         @Header(LAST_KNOWN_REVISION_HEADER) revision: Int,

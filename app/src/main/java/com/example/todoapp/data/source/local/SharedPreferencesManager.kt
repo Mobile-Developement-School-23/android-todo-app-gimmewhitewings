@@ -4,6 +4,12 @@ import android.content.SharedPreferences
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * Shared preferences manager - helper class for shared preferences
+ *
+ * @property sharedPreferences
+ * @constructor Create empty Shared preferences manager
+ */
 class SharedPreferencesManager @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     fun getDeviceId(): String {

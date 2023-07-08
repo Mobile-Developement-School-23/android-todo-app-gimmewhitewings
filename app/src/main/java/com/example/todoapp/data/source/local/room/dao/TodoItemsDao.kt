@@ -10,7 +10,11 @@ import androidx.room.Upsert
 import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
 import kotlinx.coroutines.flow.Flow
 
-
+/**
+ * Todo items dao - room data access object
+ *
+ * @constructor Create empty Todo items dao
+ */
 @Dao
 interface TodoItemsDao {
 
@@ -25,9 +29,6 @@ interface TodoItemsDao {
 
     @Query("SELECT * FROM todo_item WHERE id = :itemId")
     suspend fun getTodoItemById(itemId: String): TodoItemEntity?
-
-    @Query("SELECT id FROM todo_item")
-    suspend fun getIds(): List<String>
 
     @Query("DELETE FROM todo_item WHERE id = :itemId")
     suspend fun deleteTodoItemById(itemId: String)

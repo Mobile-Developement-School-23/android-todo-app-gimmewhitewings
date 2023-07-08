@@ -20,7 +20,7 @@ data class TodoItemDto(
  * Converts the network model to the local model for persisting
  * by the local data source
  */
-fun TodoItemDto.asEntity() = TodoItemEntity(
+fun TodoItemDto.toEntity() = TodoItemEntity(
     id = id,
     text = text,
     importance = when (importance) {
