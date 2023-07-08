@@ -3,11 +3,11 @@ package com.example.todoapp.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.todoapp.ToDoApplication
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,9 +22,21 @@ data class AddEditUiState(
     val deadline: Date? = null,
 )
 
-class AddEditTaskViewModel(
+class AddEditTaskViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface AddEditTasksViewModelFactory {
+        fun create(): AddEditTaskViewModel
+    }
+
+    class Factory(private val factory: AddEditTasksViewModelFactory) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return factory.create() as T
+        }
+    }
 
     private lateinit var editedItem: TodoItem
     private var isItemLoaded = false
@@ -117,27 +129,6 @@ class AddEditTaskViewModel(
             it.copy(
                 text = text
             )
-        }
-    }
-
-
-    companion object {
-
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                // Get the Application object from extras
-                val application =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                // Create a SavedStateHandle for this ViewModel from extras
-
-                return AddEditTaskViewModel(
-                    (application as ToDoApplication).repository,
-                ) as T
-            }
         }
     }
 }

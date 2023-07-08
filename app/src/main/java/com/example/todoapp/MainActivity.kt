@@ -16,9 +16,12 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
+    private val component by lazy { appComponent.activityComponent() }
 
     private val viewModel: ActivityViewModel by viewModels {
-        ActivityViewModel.Factory
+        ActivityViewModel.Factory(
+            component.provideActivityViewModel()
+        )
     }
 
     private lateinit var navController: NavController
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        (application as ToDoApplication).startUploadWorker()
+        //(application as ToDoApplication).startUploadWorker()
     }
 
     override fun onDestroy() {

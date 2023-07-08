@@ -1,12 +1,14 @@
 package com.example.todoapp.data.remote
 
+import com.example.todoapp.utils.AUTH_TOKEN
 import okhttp3.Interceptor
 import okhttp3.Response
+import javax.inject.Inject
 
-class AuthInterceptor(private val authToken: String) : Interceptor {
+class AuthInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .header("Authorization", "Bearer $authToken")
+            .header("Authorization", "Bearer $AUTH_TOKEN")
             .build()
         return chain.proceed(request)
     }

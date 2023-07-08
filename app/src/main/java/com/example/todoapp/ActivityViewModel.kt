@@ -3,14 +3,29 @@ package com.example.todoapp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.todoapp.data.repository.TodoItemsRepository
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ActivityViewModel(repository: TodoItemsRepository) : ViewModel() {
+class ActivityViewModel @AssistedInject constructor(
+    repository: TodoItemsRepository
+) : ViewModel() {
+
+    @AssistedFactory
+    interface ActivityViewModelFactory {
+        fun create(): ActivityViewModel
+    }
+
+    class Factory(private val factory: ActivityViewModelFactory) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return factory.create() as T
+        }
+    }
 
 
     private var _errorState = MutableStateFlow(ErrorUiState())
@@ -25,26 +40,6 @@ class ActivityViewModel(repository: TodoItemsRepository) : ViewModel() {
                         error = result.exceptionOrNull()
                     )
                 }
-            }
-        }
-    }
-
-    companion object {
-
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                // Get the Application object from extras
-                val application =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                // Create a SavedStateHandle for this ViewModel from extras
-
-                return ActivityViewModel(
-                    (application as ToDoApplication).repository,
-                ) as T
             }
         }
     }

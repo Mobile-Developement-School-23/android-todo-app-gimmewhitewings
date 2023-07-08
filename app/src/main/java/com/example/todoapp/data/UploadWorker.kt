@@ -8,18 +8,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-class UploadWorker(
-    context: Context,
-    workerParams: WorkerParameters,
-) : CoroutineWorker(context, workerParams) {
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        val todoItemsRepository = (applicationContext as ToDoApplication).repository
-        try {
-            todoItemsRepository.patchTodoItems()
-            todoItemsRepository.update()
-            return@withContext Result.success()
-        } catch (e: Exception) {
-            return@withContext Result.retry()
-        }
-    }
-}
+//class UploadWorker(
+//    context: Context,
+//    workerParams: WorkerParameters,
+//) : CoroutineWorker(context, workerParams) {
+//    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+//        val todoItemsRepository = (applicationContext as ToDoApplication).repository
+//        try {
+//            todoItemsRepository.patchTodoItems()
+//            todoItemsRepository.update()
+//            return@withContext Result.success()
+//        } catch (e: Exception) {
+//            return@withContext Result.retry()
+//        }
+//    }
+//}

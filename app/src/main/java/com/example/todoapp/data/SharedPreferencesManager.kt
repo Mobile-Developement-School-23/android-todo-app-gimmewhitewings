@@ -2,8 +2,9 @@ package com.example.todoapp.data
 
 import android.content.SharedPreferences
 import java.util.UUID
+import javax.inject.Inject
 
-class SharedPreferencesManager(private val sharedPreferences: SharedPreferences) {
+class SharedPreferencesManager @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     fun getDeviceId(): String {
         val deviceId = sharedPreferences.getString("device_id", null)

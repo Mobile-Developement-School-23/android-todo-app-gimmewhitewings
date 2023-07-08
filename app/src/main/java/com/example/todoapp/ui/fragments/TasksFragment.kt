@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
+import com.example.todoapp.appComponent
 import com.example.todoapp.databinding.FragmentTasksBinding
 import com.example.todoapp.ui.TasksViewModel
 import com.example.todoapp.ui.adapters.TodoItemDiffCalculator
@@ -28,7 +29,13 @@ class TasksFragment : Fragment() {
 
     private lateinit var adapter: TodoItemsAdapter
 
-    private val viewModel: TasksViewModel by viewModels { TasksViewModel.Factory }
+    private val component by lazy { requireActivity().appComponent.tasksFragmentComponent() }
+
+    private val viewModel: TasksViewModel by viewModels {
+        TasksViewModel.Factory(
+            component.provideTasksViewModel()
+        )
+    }
 
 
     override fun onCreateView(

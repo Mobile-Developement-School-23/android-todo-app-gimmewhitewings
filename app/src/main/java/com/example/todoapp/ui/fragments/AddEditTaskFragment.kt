@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
+import com.example.todoapp.appComponent
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.databinding.FragmentAddEditTaskBinding
 import com.example.todoapp.ui.AddEditTaskViewModel
@@ -30,8 +31,13 @@ class AddEditTaskFragment : Fragment() {
     private var _binding: FragmentAddEditTaskBinding? = null
 
     private val binding get() = _binding!!
+    private val component by lazy { requireActivity().appComponent.addEditTaskFragmentComponent() }
 
-    private val viewModel: AddEditTaskViewModel by viewModels { AddEditTaskViewModel.Factory }
+    private val viewModel: AddEditTaskViewModel by viewModels {
+        AddEditTaskViewModel.Factory(
+            component.provideAddEditTaskViewModel()
+        )
+    }
 
     private lateinit var datePicker: MaterialDatePicker<Long>
     private var todoItemId: String? = null

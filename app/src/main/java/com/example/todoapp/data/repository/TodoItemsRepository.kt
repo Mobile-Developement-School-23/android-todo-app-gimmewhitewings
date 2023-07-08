@@ -1,5 +1,6 @@
 package com.example.todoapp.data.repository
 
+import android.util.Log
 import com.example.todoapp.data.SharedPreferencesManager
 import com.example.todoapp.data.local.dao.TodoItemsDao
 import com.example.todoapp.data.local.entity.TodoItemEntity
@@ -18,8 +19,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TodoItemsRepository(
+class TodoItemsRepository @Inject constructor(
     private val todoItemsDao: TodoItemsDao,
     private val todoApiService: TodoApiService,
     private val sharedPreferencesManager: SharedPreferencesManager,
@@ -36,8 +38,10 @@ class TodoItemsRepository(
     }
 
     suspend fun update() {
+        Log.d("update", "update: called")
         _errorFlow.value = externalScope.runCatching {
             val response = todoApiService.getTodoItems()
+            Log.d("update", "update: ${response.isSuccessful}")
             revision = response.body()?.revision
             val remoteTodoItems =
                 response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
