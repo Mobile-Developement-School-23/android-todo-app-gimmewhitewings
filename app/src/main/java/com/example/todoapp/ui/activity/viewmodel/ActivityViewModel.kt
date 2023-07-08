@@ -1,4 +1,4 @@
-package com.example.todoapp
+package com.example.todoapp.ui.activity.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -48,7 +48,3 @@ class ActivityViewModel @AssistedInject constructor(
     }
 }
 
-data class ErrorUiState(
-    val isErrorShown: Boolean = false,
-    val error: Throwable? = null
-)

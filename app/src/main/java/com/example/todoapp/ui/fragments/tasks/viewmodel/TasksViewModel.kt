@@ -1,4 +1,4 @@
-package com.example.todoapp.ui
+package com.example.todoapp.ui.fragments.tasks.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -12,13 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class TasksUiState(
-    val todoItemsList: List<TodoItemUiState> = emptyList(),
-    val completedTodoItemsNumber: Int = 0,
-    val showUncompletedItems: Boolean = false,
-    val showError: Boolean = false
-)
 
 class TasksViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository

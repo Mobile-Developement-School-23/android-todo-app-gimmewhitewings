@@ -32,7 +32,7 @@ class ToDoApplication : Application() {
         val uploadWorkRequest = OneTimeWorkRequestBuilder<UploadWorker>()
             .setConstraints(constraints)
             .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
+                BackoffPolicy.EXPONENTIAL,
                 1,
                 TimeUnit.MINUTES
             )

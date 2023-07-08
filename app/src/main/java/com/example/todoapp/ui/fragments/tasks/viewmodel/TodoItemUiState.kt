@@ -1,4 +1,4 @@
-package com.example.todoapp.ui
+package com.example.todoapp.ui.fragments.tasks.viewmodel
 
 import com.example.todoapp.data.model.Importance
 import java.util.Date

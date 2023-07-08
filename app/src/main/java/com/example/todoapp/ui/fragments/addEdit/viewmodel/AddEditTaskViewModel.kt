@@ -1,4 +1,4 @@
-package com.example.todoapp.ui
+package com.example.todoapp.ui.fragments.addEdit.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -15,12 +15,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
-
-data class AddEditUiState(
-    val text: String = "",
-    val importance: Importance = Importance.COMMON,
-    val deadline: Date? = null,
-)
 
 class AddEditTaskViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository

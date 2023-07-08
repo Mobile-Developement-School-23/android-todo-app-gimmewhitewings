@@ -1,4 +1,4 @@
-package com.example.todoapp.ui.adapters
+package com.example.todoapp.ui.fragments.tasks.adapter
 
 import android.view.View
 import androidx.core.view.isVisible
@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.databinding.TodoListItemBinding
-import com.example.todoapp.ui.TasksViewModel
-import com.example.todoapp.ui.TodoItemUiState
+import com.example.todoapp.ui.fragments.tasks.viewmodel.TasksViewModel
+import com.example.todoapp.ui.fragments.tasks.viewmodel.TodoItemUiState
 import com.example.todoapp.utils.DateFormatter
 import com.example.todoapp.utils.resolveColorAttribute
 

@@ -1,7 +1,7 @@
 package com.example.todoapp.data.repository
 
 import android.util.Log
-import com.example.todoapp.data.SharedPreferencesManager
+import com.example.todoapp.data.local.SharedPreferencesManager
 import com.example.todoapp.data.local.dao.TodoItemsDao
 import com.example.todoapp.data.local.entity.TodoItemEntity
 import com.example.todoapp.data.local.entity.toDomain

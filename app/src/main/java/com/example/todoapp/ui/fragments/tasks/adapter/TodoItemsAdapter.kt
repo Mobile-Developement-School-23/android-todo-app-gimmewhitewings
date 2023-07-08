@@ -1,17 +1,17 @@
-package com.example.todoapp.ui.adapters
+package com.example.todoapp.ui.fragments.tasks.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.todoapp.databinding.TodoListItemBinding
-import com.example.todoapp.ui.TasksViewModel
-import com.example.todoapp.ui.TodoItemUiState
+import com.example.todoapp.ui.fragments.tasks.viewmodel.TasksViewModel
+import com.example.todoapp.ui.fragments.tasks.viewmodel.TodoItemUiState
 
 
 class TodoItemsAdapter(
     private val viewModel: TasksViewModel,
     todoItemDiffUtil: TodoItemDiffCalculator,
-    val onItemClicked: (String) -> Unit
+    private val onItemClicked: (String) -> Unit
 ) : ListAdapter<TodoItemUiState, TodoItemViewHolder>(todoItemDiffUtil) {
 
     override fun onCreateViewHolder(

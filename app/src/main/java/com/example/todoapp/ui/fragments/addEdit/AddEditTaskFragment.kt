@@ -1,4 +1,4 @@
-package com.example.todoapp.ui.fragments
+package com.example.todoapp.ui.fragments.addEdit
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +17,7 @@ import com.example.todoapp.R
 import com.example.todoapp.appComponent
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.databinding.FragmentAddEditTaskBinding
-import com.example.todoapp.ui.AddEditTaskViewModel
+import com.example.todoapp.ui.fragments.addEdit.viewmodel.AddEditTaskViewModel
 import com.example.todoapp.utils.DateFormatter
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward

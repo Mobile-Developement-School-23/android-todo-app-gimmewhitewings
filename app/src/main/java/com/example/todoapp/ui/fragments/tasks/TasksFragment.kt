@@ -1,4 +1,4 @@
-package com.example.todoapp.ui.fragments
+package com.example.todoapp.ui.fragments.tasks
 
 import android.os.Bundle
 import android.util.Log
@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
 import com.example.todoapp.appComponent
 import com.example.todoapp.databinding.FragmentTasksBinding
-import com.example.todoapp.ui.TasksViewModel
-import com.example.todoapp.ui.adapters.TodoItemDiffCalculator
-import com.example.todoapp.ui.adapters.TodoItemsAdapter
+import com.example.todoapp.ui.fragments.tasks.viewmodel.TasksViewModel
+import com.example.todoapp.ui.fragments.tasks.adapter.TodoItemDiffCalculator
+import com.example.todoapp.ui.fragments.tasks.adapter.TodoItemsAdapter
 import kotlinx.coroutines.launch
 
 

@@ -1,4 +1,4 @@
-package com.example.todoapp
+package com.example.todoapp.ui.activity
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -9,6 +9,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.todoapp.ui.activity.viewmodel.ActivityViewModel
+import com.example.todoapp.R
+import com.example.todoapp.ToDoApplication
+import com.example.todoapp.appComponent
 import com.example.todoapp.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
