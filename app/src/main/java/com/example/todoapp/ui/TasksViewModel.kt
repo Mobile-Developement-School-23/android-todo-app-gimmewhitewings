@@ -29,6 +29,7 @@ class TasksViewModel @AssistedInject constructor(
         fun create(): TasksViewModel
     }
 
+    @Suppress("UNCHECKED_CAST")
     class Factory(private val factory: TasksViewModelFactory) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return factory.create() as T

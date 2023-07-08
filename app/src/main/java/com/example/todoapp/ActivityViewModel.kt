@@ -1,5 +1,6 @@
 package com.example.todoapp
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -20,6 +21,7 @@ class ActivityViewModel @AssistedInject constructor(
         fun create(): ActivityViewModel
     }
 
+    @Suppress("UNCHECKED_CAST")
     class Factory(private val factory: ActivityViewModelFactory) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -34,6 +36,7 @@ class ActivityViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch {
             repository.errorFlow.collect { result ->
+                Log.e("dddd", "ddd: ${result.exceptionOrNull()?.message}")
                 _errorState.update {
                     it.copy(
                         isErrorShown = result.isFailure,

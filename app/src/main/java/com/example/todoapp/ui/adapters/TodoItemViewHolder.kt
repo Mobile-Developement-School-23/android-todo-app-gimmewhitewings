@@ -13,15 +13,23 @@ import com.example.todoapp.utils.resolveColorAttribute
 
 class TodoItemViewHolder(
     private val binding: TodoListItemBinding,
-    private val viewModel: TasksViewModel
+    private val viewModel: TasksViewModel,
+    private val onItemClicked: (String) -> Unit
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(todoItemUiState: TodoItemUiState) {
+        bindOnItemClick(todoItemUiState)
         bindBodyTextView(todoItemUiState)
         bindImportanceIcon(todoItemUiState)
         bindMaterialCheckbox(todoItemUiState)
         bindDeadlineText(todoItemUiState)
+    }
+
+    private fun bindOnItemClick(todoItemUiState: TodoItemUiState) {
+        binding.root.setOnClickListener {
+            onItemClicked(todoItemUiState.id)
+        }
     }
 
     private fun bindMaterialCheckbox(todoItemUiState: TodoItemUiState) {

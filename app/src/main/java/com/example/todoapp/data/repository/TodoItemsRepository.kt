@@ -13,6 +13,7 @@ import com.example.todoapp.data.remote.TodoApiService
 import com.example.todoapp.data.remote.models.ApiItemMessage
 import com.example.todoapp.data.remote.models.ApiListMessage
 import com.example.todoapp.data.remote.models.asEntity
+import com.example.todoapp.di.scope.AppScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AppScope
 class TodoItemsRepository @Inject constructor(
     private val todoItemsDao: TodoItemsDao,
     private val todoApiService: TodoApiService,

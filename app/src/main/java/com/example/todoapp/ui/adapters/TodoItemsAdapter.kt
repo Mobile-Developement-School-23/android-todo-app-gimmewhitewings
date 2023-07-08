@@ -24,12 +24,12 @@ class TodoItemsAdapter(
                 parent,
                 false
             ),
-            viewModel
+            viewModel,
+            onItemClicked
         )
     }
 
     override fun onBindViewHolder(holder: TodoItemViewHolder, position: Int) {
         holder.bind(getItem(position))
-        holder.itemView.setOnClickListener { onItemClicked(getItem(position).id) }
     }
 }

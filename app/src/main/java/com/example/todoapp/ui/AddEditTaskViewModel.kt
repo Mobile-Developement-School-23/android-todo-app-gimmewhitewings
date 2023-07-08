@@ -31,6 +31,7 @@ class AddEditTaskViewModel @AssistedInject constructor(
         fun create(): AddEditTaskViewModel
     }
 
+    @Suppress("UNCHECKED_CAST")
     class Factory(private val factory: AddEditTasksViewModelFactory) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
