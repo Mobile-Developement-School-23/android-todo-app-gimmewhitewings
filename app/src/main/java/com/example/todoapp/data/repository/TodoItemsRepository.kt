@@ -1,25 +1,38 @@
 package com.example.todoapp.data.repository
 
-import com.example.todoapp.data.SharedPreferencesManager
-import com.example.todoapp.data.local.dao.TodoItemsDao
-import com.example.todoapp.data.local.entity.TodoItemEntity
-import com.example.todoapp.data.local.entity.toDomain
-import com.example.todoapp.data.local.entity.toDto
 import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.model.toDto
 import com.example.todoapp.data.model.toEntity
-import com.example.todoapp.data.remote.TodoApiService
-import com.example.todoapp.data.remote.models.ApiItemMessage
-import com.example.todoapp.data.remote.models.ApiListMessage
-import com.example.todoapp.data.remote.models.asEntity
+import com.example.todoapp.data.source.local.SharedPreferencesManager
+import com.example.todoapp.data.source.local.room.dao.TodoItemsDao
+import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
+import com.example.todoapp.data.source.local.room.entity.toDomain
+import com.example.todoapp.data.source.local.room.entity.toDto
+import com.example.todoapp.data.source.remote.TodoApiService
+import com.example.todoapp.data.source.remote.models.ApiItemMessage
+import com.example.todoapp.data.source.remote.models.ApiListMessage
+import com.example.todoapp.data.source.remote.models.toEntity
+import com.example.todoapp.di.scope.AppScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TodoItemsRepository(
+
+/**
+ * Todo items repository - executes data operations
+ *
+ * @property todoItemsDao
+ * @property todoApiService
+ * @property sharedPreferencesManager
+ * @property externalScope
+ * @constructor Create empty Todo items repository
+ */
+@AppScope
+class TodoItemsRepository @Inject constructor(
     private val todoItemsDao: TodoItemsDao,
     private val todoApiService: TodoApiService,
     private val sharedPreferencesManager: SharedPreferencesManager,
@@ -40,14 +53,14 @@ class TodoItemsRepository(
             val response = todoApiService.getTodoItems()
             revision = response.body()?.revision
             val remoteTodoItems =
-                response.body()?.todoItemNetworkModelList?.map { it.asEntity() }
+                response.body()?.todoItemNetworkModelList?.map { it.toEntity() }
 
             val localTodoItems = todoItemsDao.getAllTodoItemsSnapshot()
 
             remoteTodoItems?.let { list ->
                 todoItemsDao.upsertTodoItems(list)
                 val todoItemsToDelete =
-                    localTodoItems.map { it.id }.minus(remoteTodoItems.map { it.id }.toSet())
+                    localTodoItems.map { it.id }.minus(list.map { it.id }.toSet())
                 todoItemsToDelete.forEach {
                     todoItemsDao.deleteTodoItemById(it)
                 }

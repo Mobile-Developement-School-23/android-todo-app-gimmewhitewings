@@ -1,0 +1,13 @@
+package com.example.todoapp.ui.fragments.tasks.viewmodel
+
+import com.example.todoapp.data.model.Importance
+import java.util.Date
+
+
+data class TodoItemUiState(
+    val id: String,
+    val text: String,
+    val isCompleted: Boolean = false,
+    val deadline: Date? = null,
+    val importance: Importance = Importance.COMMON
+)
