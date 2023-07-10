@@ -2,6 +2,7 @@ package com.example.todoapp.di.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.todoapp.utils.SHARED_PREFERENCES_NAME
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +26,7 @@ class AppModule(private val context: Context) {
     @Provides
     fun provideSharedPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(
-            "todo_app_shared_preferences",
+            SHARED_PREFERENCES_NAME,
             Context.MODE_PRIVATE
         )
     }

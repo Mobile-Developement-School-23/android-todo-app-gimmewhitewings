@@ -1,6 +1,7 @@
 package com.example.todoapp.data.source.local
 
 import android.content.SharedPreferences
+import com.example.todoapp.di.scope.AppScope
 import java.util.UUID
 import javax.inject.Inject
 
@@ -10,6 +11,7 @@ import javax.inject.Inject
  * @property sharedPreferences
  * @constructor Create empty Shared preferences manager
  */
+@AppScope
 class SharedPreferencesManager @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     fun getDeviceId(): String {
