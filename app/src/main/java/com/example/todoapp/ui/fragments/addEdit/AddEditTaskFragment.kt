@@ -5,6 +5,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -56,22 +94,161 @@ class AddEditTaskFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddEditTaskBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme {
+                    AddEditTaskScreen()
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun AddEditTaskScreen() {
+        Scaffold(
+            modifier = Modifier.background(color = Color(0xFFF7F6F2)),
+            topBar = {
+                TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "close"
+                            )
+                        }
+                    },
+                    actions = {
+                        TextButton(onClick = { /*TODO*/ }) {
+                            Text(text = stringResource(id = R.string.save))
+                        }
+                    }
+                )
+            },
+            content = { innerPadding ->
+                Column(
+                    Modifier
+                        .padding(top = innerPadding.calculateTopPadding())
+                        .padding(16.dp)
+                ) {
+                    DescriptionCard()
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    ImportanceSection()
+
+                    Divider()
+
+                    DeadlineSection()
+                    Spacer(Modifier.height(24.dp))
+                    Divider()
+                    TextButton(modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .fillMaxWidth(),
+                        onClick = { /*TODO*/ }) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "delete"
+                        )
+                        Text(text = stringResource(id = R.string.delete))
+                    }
+                }
+            }
+        )
+    }
+
+    @Composable
+    private fun DeadlineSection() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            var checked by remember { mutableStateOf(true) }
+            Column(horizontalAlignment = Alignment.Start) {
+                Text(text = stringResource(id = R.string.deadline))
+                Text(text = "12 июл 2023", Modifier.padding(top = 4.dp))
+            }
+            Switch(
+                checked = checked,
+                onCheckedChange = { checked = !checked }
+            )
+        }
+    }
+
+    @Composable
+    private fun ImportanceSection() {
+        Column(
+            modifier = Modifier
+                .clickable {}
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = stringResource(id = R.string.priority))
+            Text(text = "Нет", Modifier.padding(top = 4.dp))
+        }
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun PreviewImportanceSection() {
+        MaterialTheme {
+            ImportanceSection()
+        }
+    }
+
+    @Composable
+    private fun DescriptionCard() {
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            BasicTextField(
+                value = "",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .defaultMinSize(minHeight = 104.dp)
+                    .fillMaxWidth(),
+                onValueChange = { }
+            ) {
+                Text(text = stringResource(id = R.string.enter_task))
+            }
+        }
+    }
+
+    @Preview
+    @Composable
+    fun PreviewDescriptionCard() {
+        MaterialTheme {
+            DescriptionCard()
+        }
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun ScreenPreview() {
+        MaterialTheme {
+            AddEditTaskScreen()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeViewModel()
-
-        bindImportancePopupMenu()
-        bindDeleteButton()
-        bindSaveButton()
-        bindCloseButton()
-        bindEditText()
-        initDatePicker()
-        bindDeadlineSwitch()
+//        observeViewModel()
+//
+//        bindImportancePopupMenu()
+//        bindDeleteButton()
+//        bindSaveButton()
+//        bindCloseButton()
+//        bindEditText()
+//        initDatePicker()
+//        bindDeadlineSwitch()
     }
 
     private fun bindDeadlineSwitch() {
