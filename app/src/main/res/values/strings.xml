@@ -2,7 +2,7 @@
     <string name="app_name">ToDo App</string>
     <string name="add_new">Новое</string>
     <string name="done_amount">Выполнено - %1$d</string>
-    <string name="my_tasks">Мои задачи</string>
+    <string name="my_tasks">Мои дела</string>
     <string name="save">Сохранить</string>
     <string name="enter_task">Что надо сделать…</string>
     <string name="priority">Важность</string>
