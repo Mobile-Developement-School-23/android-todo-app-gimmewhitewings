@@ -19,6 +19,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,9 +29,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +60,7 @@ import com.example.todoapp.appComponent
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.databinding.FragmentAddEditTaskBinding
 import com.example.todoapp.ui.fragments.addEdit.viewmodel.AddEditTaskViewModel
+import com.example.todoapp.ui.theme.TodoAppTheme
 import com.example.todoapp.utils.DateFormatter
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
@@ -97,7 +102,7 @@ class AddEditTaskFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MaterialTheme {
+                TodoAppTheme {
                     AddEditTaskScreen()
                 }
             }
@@ -108,21 +113,34 @@ class AddEditTaskFragment : Fragment() {
     @Composable
     private fun AddEditTaskScreen() {
         Scaffold(
-            modifier = Modifier.background(color = Color(0xFFF7F6F2)),
+            containerColor = TodoAppTheme.colors.backPrimary,
             topBar = {
                 TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = TodoAppTheme.colors.backPrimary
+                    ),
                     title = {},
                     navigationIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
-                                contentDescription = "close"
+                                contentDescription = "close",
+                                tint = TodoAppTheme.colors.labelPrimary
                             )
                         }
                     },
                     actions = {
-                        TextButton(onClick = { /*TODO*/ }) {
-                            Text(text = stringResource(id = R.string.save))
+                        TextButton(
+                            onClick = { /*TODO*/ },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = TodoAppTheme.colors.colorBlue
+                            )
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.save),
+                                color = TodoAppTheme.colors.colorBlue
+                            )
                         }
                     }
                 )
@@ -130,6 +148,7 @@ class AddEditTaskFragment : Fragment() {
             content = { innerPadding ->
                 Column(
                     Modifier
+                        .background(color = TodoAppTheme.colors.backPrimary)
                         .padding(top = innerPadding.calculateTopPadding())
                         .padding(16.dp)
                 ) {
@@ -144,15 +163,22 @@ class AddEditTaskFragment : Fragment() {
                     DeadlineSection()
                     Spacer(Modifier.height(24.dp))
                     Divider()
-                    TextButton(modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                        .fillMaxWidth(),
-                        onClick = { /*TODO*/ }) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { }
+                            .padding(horizontal = 16.dp, vertical = 20.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
-                            contentDescription = "delete"
+                            contentDescription = "delete",
+                            tint = TodoAppTheme.colors.colorRed
                         )
-                        Text(text = stringResource(id = R.string.delete))
+                        Text(
+                            text = stringResource(id = R.string.delete),
+                            color = TodoAppTheme.colors.colorRed
+                        )
                     }
                 }
             }
@@ -170,12 +196,24 @@ class AddEditTaskFragment : Fragment() {
         ) {
             var checked by remember { mutableStateOf(true) }
             Column(horizontalAlignment = Alignment.Start) {
-                Text(text = stringResource(id = R.string.deadline))
-                Text(text = "12 июл 2023", Modifier.padding(top = 4.dp))
+                Text(
+                    text = stringResource(id = R.string.deadline),
+                    color = TodoAppTheme.colors.labelPrimary
+                )
+                Text(
+                    text = "12 июл 2023",
+                    Modifier.padding(top = 4.dp),
+                    color = TodoAppTheme.colors.colorBlue
+                )
             }
             Switch(
                 checked = checked,
-                onCheckedChange = { checked = !checked }
+                onCheckedChange = { checked = !checked },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = TodoAppTheme.colors.colorWhite,
+                    checkedTrackColor = TodoAppTheme.colors.colorBlue,
+                    uncheckedTrackColor = TodoAppTheme.colors.backPrimary
+                )
             )
         }
     }
@@ -189,8 +227,15 @@ class AddEditTaskFragment : Fragment() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = stringResource(id = R.string.priority))
-            Text(text = "Нет", Modifier.padding(top = 4.dp))
+            Text(
+                text = stringResource(id = R.string.priority),
+                color = TodoAppTheme.colors.labelPrimary
+            )
+            Text(
+                text = "Нет",
+                Modifier.padding(top = 4.dp),
+                color = TodoAppTheme.colors.labelTertiary
+            )
         }
     }
 
@@ -206,7 +251,9 @@ class AddEditTaskFragment : Fragment() {
     private fun DescriptionCard() {
         ElevatedCard(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = TodoAppTheme.colors.backSecondary)
+
         ) {
             BasicTextField(
                 value = "",
@@ -216,7 +263,10 @@ class AddEditTaskFragment : Fragment() {
                     .fillMaxWidth(),
                 onValueChange = { }
             ) {
-                Text(text = stringResource(id = R.string.enter_task))
+                Text(
+                    text = stringResource(id = R.string.enter_task),
+                    color = TodoAppTheme.colors.labelTertiary
+                )
             }
         }
     }
