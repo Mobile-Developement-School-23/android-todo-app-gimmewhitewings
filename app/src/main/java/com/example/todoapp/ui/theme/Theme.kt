@@ -26,6 +26,8 @@ fun TodoAppTheme(
 ) {
     val extendedColors =
         if (darkTheme) darkExtendedColors else lightExtendedColors
+    val extendedTypography = defaultTypography
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -44,7 +46,10 @@ fun TodoAppTheme(
         }
     }
 
-    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+    CompositionLocalProvider(
+        LocalExtendedColors provides extendedColors,
+        LocalExtendedTypography provides extendedTypography
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography(),
@@ -57,4 +62,7 @@ object TodoAppTheme {
     val colors: ExtendedColors
         @Composable
         get() = LocalExtendedColors.current
+    val typography: ExtendedTypography
+        @Composable
+        get() = LocalExtendedTypography.current
 }
