@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.BasicTextField
@@ -180,10 +181,13 @@ class AddEditTaskFragment : Fragment() {
                                     Text(text = stringResource(id = R.string.save).uppercase())
                                 }
                             },
-                            modifier = Modifier.padding(horizontal = 100.dp)
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .padding(horizontal = 100.dp)
                         ) {
                             DatePicker(
                                 state = datePickerState,
+                                dateValidator = { it > Date().time },
                                 colors = DatePickerDefaults.colors(
                                     selectedDayContentColor = TodoAppTheme.colors.labelPrimary,
                                     selectedDayContainerColor = TodoAppTheme.colors.colorBlue,
