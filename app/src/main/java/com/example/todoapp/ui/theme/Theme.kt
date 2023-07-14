@@ -16,6 +16,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.todoapp.ui.theme.extended.ExtendedColors
+import com.example.todoapp.ui.theme.extended.ExtendedTypography
+import com.example.todoapp.ui.theme.extended.LocalExtendedColors
+import com.example.todoapp.ui.theme.extended.LocalExtendedTypography
+import com.example.todoapp.ui.theme.extended.darkExtendedColors
+import com.example.todoapp.ui.theme.extended.defaultTypography
+import com.example.todoapp.ui.theme.extended.lightExtendedColors
 
 @Composable
 fun TodoAppTheme(

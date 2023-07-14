@@ -1,4 +1,4 @@
-package com.example.todoapp.ui.theme
+package com.example.todoapp.ui.theme.extended
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
