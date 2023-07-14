@@ -44,7 +44,8 @@ class AddEditTaskViewModel @AssistedInject constructor(
                     it.copy(
                         text = editedItem.text,
                         importance = editedItem.importance,
-                        deadline = editedItem.deadline
+                        deadline = editedItem.deadline,
+                        isDeleteButtonEnabled = true
                     )
                 }
                 isItemLoaded = true
@@ -123,6 +124,38 @@ class AddEditTaskViewModel @AssistedInject constructor(
         _uiState.update {
             it.copy(
                 text = text
+            )
+        }
+    }
+
+    fun closeDatePicker() {
+        _uiState.update {
+            it.copy(
+                isDatePickerDialogVisible = false
+            )
+        }
+    }
+
+    fun openDatePicker() {
+        _uiState.update {
+            it.copy(
+                isDatePickerDialogVisible = true
+            )
+        }
+    }
+
+    fun closeBottomSheet() {
+        _uiState.update {
+            it.copy(
+                isBottomSheetVisible = false
+            )
+        }
+    }
+
+    fun openBottomSheet() {
+        _uiState.update {
+            it.copy(
+                isBottomSheetVisible = true
             )
         }
     }
