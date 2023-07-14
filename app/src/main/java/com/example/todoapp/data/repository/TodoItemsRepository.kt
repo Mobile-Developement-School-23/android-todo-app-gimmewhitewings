@@ -23,13 +23,13 @@ import javax.inject.Inject
 
 
 /**
- * Todo items repository - executes data operations
+ * TodoItems repository - executes data operations
  *
  * @property todoItemsDao
  * @property todoApiService
  * @property sharedPreferencesManager
  * @property externalScope
- * @constructor Create empty Todo items repository
+ * @constructor Create empty TodoItems repository
  */
 @AppScope
 class TodoItemsRepository @Inject constructor(

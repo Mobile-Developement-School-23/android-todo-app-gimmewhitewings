@@ -11,9 +11,9 @@ import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Todo items dao - room data access object
+ * TodoItems dao - room data access object
  *
- * @constructor Create empty Todo items dao
+ * @constructor Create empty TodoItems dao
  */
 @Dao
 interface TodoItemsDao {

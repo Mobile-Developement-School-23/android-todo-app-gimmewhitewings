@@ -6,7 +6,7 @@ import java.util.Date
 
 
 /**
- * Todo item - domain model
+ * TodoItem - domain model
  *
  * @property id
  * @property text
@@ -15,7 +15,7 @@ import java.util.Date
  * @property createdAt
  * @property deadline
  * @property modifiedAt
- * @constructor Create empty Todo item
+ * @constructor Create empty TodoItem
  */
 data class TodoItem(
     val id: String,
