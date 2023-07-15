@@ -1,8 +1,13 @@
 package com.example.todoapp.ui.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -47,6 +52,27 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
 
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED -> {
+            }
+
+            shouldShowRequestPermissionRationale(
+                Manifest.permission.POST_NOTIFICATIONS
+            ) -> {
+                Toast.makeText(this, "I don't know what should I write here", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            }
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.errorState.collect {
@@ -62,6 +88,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { _: Boolean -> }
 
     override fun onStop() {
         super.onStop()
