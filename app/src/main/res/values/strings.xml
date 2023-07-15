@@ -16,4 +16,7 @@
     <string name="choose_importance">Выберите приоритет задачи</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="always_day">Всегда светлая</string>
+    <string name="always_night">Всегда тёмная</string>
+    <string name="system_them">Как в системе</string>
 </resources>

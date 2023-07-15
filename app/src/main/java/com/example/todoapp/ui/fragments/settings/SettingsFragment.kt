@@ -9,17 +9,27 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.todoapp.R
 import com.example.todoapp.appComponent
 import com.example.todoapp.ui.fragments.settings.viewmodel.SettingsViewModel
 import com.example.todoapp.ui.theme.ApplicationTheme
@@ -56,36 +66,82 @@ class SettingsFragment : Fragment() {
     @Composable
     private fun SettingsScreen(viewModel: SettingsViewModel) {
         val viewState = viewModel.uiState.collectAsState()
+        val onButtonClick: (ApplicationTheme) -> Unit = {
+            viewModel.setAppTheme(it)
+            activity?.recreate()
+        }
         Surface(
             modifier = Modifier.background(
                 color = TodoAppTheme.colors.backPrimary
             )
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = TodoAppTheme.colors.backPrimary
+                    ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = {
-                    viewModel.setAppTheme(ApplicationTheme.DAY)
-                    activity?.recreate()
-                }) {
-                    Text(text = "day")
-                }
-                Button(onClick = {
-                    viewModel.setAppTheme(ApplicationTheme.SYSTEM)
-                    activity?.recreate()
-                }
-                ) {
-                    Text(text = "system")
-                }
-                Button(onClick = {
-                    viewModel.setAppTheme(ApplicationTheme.NIGHT)
-                    activity?.recreate()
-                }) {
-                    Text(text = "night")
+                listOf(
+                    ApplicationTheme.DAY,
+                    ApplicationTheme.SYSTEM,
+                    ApplicationTheme.NIGHT
+                ).forEach { applicationTheme ->
+                    ApplicationThemeButton(
+                        isSelected = applicationTheme == viewState.value.chosenMode,
+                        onButtonClick = onButtonClick,
+                        applicationTheme = applicationTheme
+                    )
                 }
             }
         }
     }
+
+    @Composable
+    fun ApplicationThemeButton(
+        onButtonClick: (ApplicationTheme) -> Unit,
+        applicationTheme: ApplicationTheme,
+        isSelected: Boolean
+    ) {
+        Button(
+            onClick = { onButtonClick(applicationTheme) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = TodoAppTheme.colors.colorBlue.copy(
+                    alpha = if (isSelected) 1f else 0.2f
+                ),
+                contentColor = Color.White
+            )
+        ) {
+            Icon(
+                painter = applicationTheme.toPainterResource(),
+                contentDescription = applicationTheme.toStringResource()
+            )
+            Text(text = applicationTheme.toStringResource())
+        }
+    }
+}
+
+@Composable
+fun ApplicationTheme.toStringResource(): String {
+    return when (this) {
+        ApplicationTheme.DAY -> stringResource(id = R.string.always_day)
+        ApplicationTheme.NIGHT -> stringResource(id = R.string.always_night)
+        ApplicationTheme.SYSTEM -> stringResource(id = R.string.system_them)
+    }
+}
+
+@Composable
+fun ApplicationTheme.toPainterResource(): Painter {
+    return painterResource(
+        id = when (this) {
+            ApplicationTheme.DAY -> R.drawable.ic_day
+            ApplicationTheme.NIGHT -> R.drawable.ic_night
+            ApplicationTheme.SYSTEM -> R.drawable.ic_system_theme
+        }
+    )
 }
