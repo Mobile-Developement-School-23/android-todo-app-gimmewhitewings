@@ -3,6 +3,7 @@ package com.example.todoapp.ui.fragments.addEdit.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.todoapp.data.TodoAlarmScheduler
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
@@ -19,7 +20,8 @@ import java.util.UUID
 
 class AddEditTaskViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository,
-    sharedPreferencesManager: SharedPreferencesManager
+    sharedPreferencesManager: SharedPreferencesManager,
+    private val todoAlarmScheduler: TodoAlarmScheduler
 ) : ViewModel() {
 
     @AssistedFactory
@@ -85,36 +87,47 @@ class AddEditTaskViewModel @AssistedInject constructor(
         }
     }
 
+
     private fun addNewTodoItem() {
         viewModelScope.launch {
             val enteredData = _uiState.value
-            repository.addTodoItem(
-                TodoItem(
-                    id = UUID.randomUUID().toString(),
-                    isCompleted = false,
-                    createdAt = Date(),
-                    importance = enteredData.importance,
-                    text = enteredData.text,
-                    deadline = enteredData.deadline
-                )
+            val newItem = TodoItem(
+                id = UUID.randomUUID().toString(),
+                isCompleted = false,
+                createdAt = Date(),
+                importance = enteredData.importance,
+                text = enteredData.text,
+                deadline = enteredData.deadline
             )
+            repository.addTodoItem(
+                newItem
+            )
+            if (newItem.deadline != null) {
+                todoAlarmScheduler.schedule(todoItem = newItem)
+            }
         }
     }
 
     private fun updateTodoItem() {
         viewModelScope.launch {
             val enteredData = _uiState.value
-            repository.updateTodoItem(
-                TodoItem(
-                    id = editedItem.id,
-                    text = enteredData.text,
-                    importance = enteredData.importance,
-                    deadline = enteredData.deadline,
-                    modifiedAt = Date(),
-                    createdAt = editedItem.createdAt,
-                    isCompleted = editedItem.isCompleted
-                )
+            val updatedItem = TodoItem(
+                id = editedItem.id,
+                text = enteredData.text,
+                importance = enteredData.importance,
+                deadline = enteredData.deadline,
+                modifiedAt = Date(),
+                createdAt = editedItem.createdAt,
+                isCompleted = editedItem.isCompleted
             )
+            repository.updateTodoItem(
+                updatedItem
+            )
+            if (updatedItem.deadline == null) {
+                todoAlarmScheduler.cancel(updatedItem)
+            } else {
+                todoAlarmScheduler.schedule(todoItem = updatedItem)
+            }
         }
     }
 

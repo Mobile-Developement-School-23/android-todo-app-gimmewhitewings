@@ -1,5 +1,6 @@
 package com.example.todoapp.di.module
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.todoapp.utils.SHARED_PREFERENCES_NAME
@@ -16,6 +17,11 @@ class AppModule(private val context: Context) {
     @Provides
     fun provideContext(): Context {
         return context
+    }
+
+    @Provides
+    fun provideAlarmManager(context: Context): AlarmManager {
+        return context.getSystemService(AlarmManager::class.java)
     }
 
     @Provides

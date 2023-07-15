@@ -1,7 +1,11 @@
 package com.example.todoapp
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -17,6 +21,7 @@ import com.example.todoapp.di.component.DaggerAppComponent
 import com.example.todoapp.di.module.AppModule
 import com.example.todoapp.utils.HOURS_TO_UPDATE
 import java.util.concurrent.TimeUnit
+
 
 class ToDoApplication : Application() {
 
@@ -68,14 +73,26 @@ class ToDoApplication : Application() {
         )
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    fun createNotificationChannel() {
+        val id = "deadline_channel"
+        val name = "Deadline alerts"
+        val des = "Deadline notifications"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(id, name, importance)
+        channel.description = des
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
+    }
+
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(context = applicationContext))
             .build()
+        createNotificationChannel()
         startDownloadWorker()
     }
-
 }
 
 val Context.appComponent: AppComponent
