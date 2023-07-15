@@ -14,4 +14,6 @@
     <string name="network_error">Ошибка сети</string>
     <string name="not_synchronized">Данные не синхронизированны</string>
     <string name="choose_importance">Выберите приоритет задачи</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

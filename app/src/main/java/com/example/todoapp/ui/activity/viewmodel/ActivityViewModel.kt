@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.data.repository.TodoItemsRepository
+import com.example.todoapp.data.source.local.SharedPreferencesManager
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ActivityViewModel @AssistedInject constructor(
-    repository: TodoItemsRepository
+    repository: TodoItemsRepository,
+    private val sharedPreferencesManager: SharedPreferencesManager
 ) : ViewModel() {
 
     @AssistedFactory
@@ -44,5 +46,7 @@ class ActivityViewModel @AssistedInject constructor(
             }
         }
     }
+
+    fun theme() = sharedPreferencesManager.getApplicationTheme()
 }
 

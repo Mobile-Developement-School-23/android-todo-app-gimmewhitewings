@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.todoapp.data.model.Importance
 import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.data.repository.TodoItemsRepository
+import com.example.todoapp.data.source.local.SharedPreferencesManager
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ import java.util.Date
 import java.util.UUID
 
 class AddEditTaskViewModel @AssistedInject constructor(
-    private val repository: TodoItemsRepository
+    private val repository: TodoItemsRepository,
+    sharedPreferencesManager: SharedPreferencesManager
 ) : ViewModel() {
 
     @AssistedFactory
@@ -35,6 +37,8 @@ class AddEditTaskViewModel @AssistedInject constructor(
 
     private lateinit var editedItem: TodoItem
     private var isItemLoaded = false
+
+    val theme = sharedPreferencesManager.getApplicationTheme()
 
     fun loadTodoItem(todoItemId: String) {
         if (!isItemLoaded) {

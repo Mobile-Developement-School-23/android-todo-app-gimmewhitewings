@@ -1,6 +1,7 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.ToDoApp" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.ToDoApp.Night" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="support_separator">@color/support_dark_separator</item>
         <item name="support_overlay">@color/support_dark_overlay</item>
@@ -18,4 +19,6 @@
         <item name="back_secondary">@color/back_dark_secondary</item>
         <item name="back_elevated">@color/back_dark_elevated</item>
     </style>
+
+    <style name="ToDoAppTheme" parent="Base.Theme.ToDoApp.Night" />
 </resources>

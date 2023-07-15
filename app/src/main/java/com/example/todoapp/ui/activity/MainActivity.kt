@@ -9,11 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.todoapp.ui.activity.viewmodel.ActivityViewModel
 import com.example.todoapp.R
 import com.example.todoapp.ToDoApplication
 import com.example.todoapp.appComponent
 import com.example.todoapp.databinding.ActivityMainBinding
+import com.example.todoapp.ui.activity.viewmodel.ActivityViewModel
+import com.example.todoapp.ui.theme.ApplicationTheme
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -30,6 +31,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(
+            when (viewModel.theme()) {
+                ApplicationTheme.DAY -> R.style.Base_Theme_ToDoApp_Day
+                ApplicationTheme.NIGHT -> R.style.Base_Theme_ToDoApp_Night
+                ApplicationTheme.SYSTEM -> R.style.ToDoAppTheme
+            }
+        )
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         _binding = ActivityMainBinding.inflate(layoutInflater)

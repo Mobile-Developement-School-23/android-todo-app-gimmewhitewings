@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.todoapp.appComponent
 import com.example.todoapp.ui.fragments.addEdit.compose.AddEditTaskContent
 import com.example.todoapp.ui.fragments.addEdit.viewmodel.AddEditTaskViewModel
+import com.example.todoapp.ui.theme.ApplicationTheme
 import com.example.todoapp.ui.theme.TodoAppTheme
 
 
@@ -47,13 +49,17 @@ class AddEditTaskFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                TodoAppTheme {
+                TodoAppTheme(
+                    darkTheme = viewModel.theme == ApplicationTheme.NIGHT ||
+                            (viewModel.theme == ApplicationTheme.SYSTEM && isSystemInDarkTheme())
+                ) {
                     AddEditTaskScreen(viewModel)
                 }
             }
         }
     }
 
+    // TODO: move from the fragment
     @Composable
     fun AddEditTaskScreen(
         viewModel: AddEditTaskViewModel = viewModel()

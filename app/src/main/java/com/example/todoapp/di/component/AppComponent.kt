@@ -14,4 +14,5 @@ interface AppComponent {
     fun activityComponent(): ActivityComponent
     fun tasksFragmentComponent(): TasksFragmentComponent
     fun addEditTaskFragmentComponent(): AddEditTaskFragmentComponent
+    fun settingsFragmentComponent(): SettingsFragmentComponent
 }
