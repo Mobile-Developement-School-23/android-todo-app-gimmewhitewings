@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -34,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -42,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -57,12 +61,14 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 fun AddEditTaskTopAppBar(
     onCloseButtonClicked: () -> Unit,
-    onSaveButtonClicked: () -> Unit
+    onSaveButtonClicked: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = TodoAppTheme.colors.backPrimary
         ),
+        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
         title = {},
         navigationIcon = {
             IconButton(
@@ -92,6 +98,7 @@ fun AddEditTaskTopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditTaskContent(
     onCloseButtonClicked: () -> Unit = {},
@@ -111,14 +118,21 @@ fun AddEditTaskContent(
     isBottomSheetVisible: Boolean,
     closeBottomSheet: () -> Unit,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
+        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = TodoAppTheme.colors.backPrimary,
         topBar = {
-            AddEditTaskTopAppBar(onCloseButtonClicked, onSaveButtonClicked)
+            AddEditTaskTopAppBar(
+                onCloseButtonClicked = onCloseButtonClicked,
+                onSaveButtonClicked = onSaveButtonClicked,
+                scrollBehavior = scrollBehavior
+            )
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .background(color = TodoAppTheme.colors.backPrimary)
                 .padding(top = innerPadding.calculateTopPadding())
                 .padding(16.dp)
