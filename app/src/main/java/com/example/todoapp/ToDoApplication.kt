@@ -19,6 +19,7 @@ import com.example.todoapp.data.background.UploadWorker
 import com.example.todoapp.di.component.AppComponent
 import com.example.todoapp.di.component.DaggerAppComponent
 import com.example.todoapp.di.module.AppModule
+import com.example.todoapp.utils.DEADLINE_CHANNEL_ID
 import com.example.todoapp.utils.HOURS_TO_UPDATE
 import java.util.concurrent.TimeUnit
 
@@ -75,7 +76,7 @@ class ToDoApplication : Application() {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun createNotificationChannel() {
-        val id = "deadline_channel"
+        val id = DEADLINE_CHANNEL_ID
         val name = "Deadline alerts"
         val des = "Deadline notifications"
         val importance = NotificationManager.IMPORTANCE_DEFAULT

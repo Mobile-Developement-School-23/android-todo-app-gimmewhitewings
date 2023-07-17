@@ -56,8 +56,7 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED -> {
-            }
+            ) == PackageManager.PERMISSION_GRANTED -> {}
 
             shouldShowRequestPermissionRationale(
                 Manifest.permission.POST_NOTIFICATIONS

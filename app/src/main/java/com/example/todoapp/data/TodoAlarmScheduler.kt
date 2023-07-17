@@ -13,8 +13,14 @@ import androidx.core.content.ContextCompat
 import com.example.todoapp.R
 import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.di.scope.AppScope
+import com.example.todoapp.utils.DEADLINE_CHANNEL_ID
+import com.example.todoapp.utils.ID_KEY
+import com.example.todoapp.utils.IMPORTANCE_KEY
+import com.example.todoapp.utils.TEXT_KEY
 import javax.inject.Inject
 import kotlin.random.Random
+
+
 
 @AppScope
 class TodoAlarmScheduler @Inject constructor(
@@ -23,9 +29,9 @@ class TodoAlarmScheduler @Inject constructor(
 ) {
     fun schedule(todoItem: TodoItem) {
         val intent = Intent(context, TodoAlarmReceiver::class.java).apply {
-            putExtra("id", todoItem.id)
-            putExtra("importance", todoItem.importance.ordinal)
-            putExtra("text", todoItem.text)
+            putExtra(ID_KEY, todoItem.id)
+            putExtra(IMPORTANCE_KEY, todoItem.importance.ordinal)
+            putExtra(TEXT_KEY, todoItem.text)
         }
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
@@ -53,10 +59,10 @@ class TodoAlarmScheduler @Inject constructor(
 
 class TodoAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        val notificationBuilder = NotificationCompat.Builder(context!!, "deadline_channel")
+        val notificationBuilder = NotificationCompat.Builder(context!!, DEADLINE_CHANNEL_ID)
             .setContentTitle(
                 context.getString(
-                    when (intent?.getIntExtra("importance", 1)) {
+                    when (intent?.getIntExtra(IMPORTANCE_KEY, 1)) {
                         0 -> R.string.low
                         1 -> R.string.no
                         2 -> R.string.high
@@ -64,9 +70,9 @@ class TodoAlarmReceiver : BroadcastReceiver() {
                     }
                 )
             )
-            .setContentText(intent?.getStringExtra("text"))
+            .setContentText(intent?.getStringExtra(TEXT_KEY))
             .setSmallIcon(
-                when (intent?.getIntExtra("importance", 1)) {
+                when (intent?.getIntExtra(IMPORTANCE_KEY, 1)) {
                     0 -> R.drawable.ic_priority_low
                     1 -> R.drawable.baseline_notifications_24
                     2 -> R.drawable.ic_priority_high
