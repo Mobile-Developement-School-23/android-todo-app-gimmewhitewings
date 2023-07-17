@@ -239,6 +239,9 @@ fun ImportanceButton(importance: Importance, onButtonClick: (Importance) -> Unit
         Importance.HIGH -> TodoAppTheme.colors.colorRed
     }
     TextButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         onClick = { onButtonClick(importance) },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
