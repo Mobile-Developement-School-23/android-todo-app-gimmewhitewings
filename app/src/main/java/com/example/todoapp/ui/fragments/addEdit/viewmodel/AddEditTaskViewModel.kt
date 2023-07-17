@@ -1,0 +1,179 @@
+package com.example.todoapp.ui.fragments.addEdit.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.example.todoapp.data.TodoAlarmScheduler
+import com.example.todoapp.data.model.Importance
+import com.example.todoapp.data.model.TodoItem
+import com.example.todoapp.data.repository.TodoItemsRepository
+import com.example.todoapp.data.source.local.SharedPreferencesManager
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.UUID
+
+class AddEditTaskViewModel @AssistedInject constructor(
+    private val repository: TodoItemsRepository,
+    sharedPreferencesManager: SharedPreferencesManager,
+    private val todoAlarmScheduler: TodoAlarmScheduler
+) : ViewModel() {
+
+    @AssistedFactory
+    interface AddEditTasksViewModelFactory {
+        fun create(): AddEditTaskViewModel
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    class Factory(private val factory: AddEditTasksViewModelFactory) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return factory.create() as T
+        }
+    }
+
+    private lateinit var editedItem: TodoItem
+    private var isItemLoaded = false
+
+    val theme = sharedPreferencesManager.getApplicationTheme()
+
+    fun loadTodoItem(todoItemId: String) {
+        if (!isItemLoaded) {
+            viewModelScope.launch {
+                editedItem = repository.getTodoItemById(todoItemId)!!
+                _uiState.update {
+                    it.copy(
+                        text = editedItem.text,
+                        importance = editedItem.importance,
+                        deadline = editedItem.deadline,
+                        isDeleteButtonEnabled = true
+                    )
+                }
+                isItemLoaded = true
+            }
+        }
+    }
+
+
+    private val _uiState = MutableStateFlow(AddEditUiState())
+    val uiState: StateFlow<AddEditUiState> = _uiState.asStateFlow()
+
+    fun setImportance(importance: Importance) {
+        _uiState.update {
+            it.copy(
+                importance = importance
+            )
+        }
+    }
+
+    fun setDate(deadline: Date?) {
+        _uiState.update {
+            it.copy(
+                deadline = deadline
+            )
+        }
+    }
+
+    fun saveTodoItem(todoItemId: String?) {
+        if (todoItemId == null) {
+            addNewTodoItem()
+        } else {
+            updateTodoItem()
+        }
+    }
+
+
+    private fun addNewTodoItem() {
+        viewModelScope.launch {
+            val enteredData = _uiState.value
+            val newItem = TodoItem(
+                id = UUID.randomUUID().toString(),
+                isCompleted = false,
+                createdAt = Date(),
+                importance = enteredData.importance,
+                text = enteredData.text,
+                deadline = enteredData.deadline
+            )
+            repository.addTodoItem(
+                newItem
+            )
+            if (newItem.deadline != null) {
+                todoAlarmScheduler.schedule(todoItem = newItem)
+            }
+        }
+    }
+
+    private fun updateTodoItem() {
+        viewModelScope.launch {
+            val enteredData = _uiState.value
+            val updatedItem = TodoItem(
+                id = editedItem.id,
+                text = enteredData.text,
+                importance = enteredData.importance,
+                deadline = enteredData.deadline,
+                modifiedAt = Date(),
+                createdAt = editedItem.createdAt,
+                isCompleted = editedItem.isCompleted
+            )
+            repository.updateTodoItem(
+                updatedItem
+            )
+            if (updatedItem.deadline == null) {
+                todoAlarmScheduler.cancel(updatedItem)
+            } else {
+                todoAlarmScheduler.schedule(todoItem = updatedItem)
+            }
+        }
+    }
+
+    fun deleteTodoItem(todoItemId: String) {
+        viewModelScope.launch {
+            repository.deleteTodoItemById(todoItemId)
+        }
+    }
+
+    fun setText(text: String) {
+        _uiState.update {
+            it.copy(
+                text = text
+            )
+        }
+    }
+
+    fun closeDatePicker() {
+        _uiState.update {
+            it.copy(
+                isDatePickerDialogVisible = false
+            )
+        }
+    }
+
+    fun openDatePicker() {
+        _uiState.update {
+            it.copy(
+                isDatePickerDialogVisible = true
+            )
+        }
+    }
+
+    fun closeBottomSheet() {
+        _uiState.update {
+            it.copy(
+                isBottomSheetVisible = false
+            )
+        }
+    }
+
+    fun openBottomSheet() {
+        _uiState.update {
+            it.copy(
+                isBottomSheetVisible = true
+            )
+        }
+    }
+}

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/back_primary"
-    tools:context=".ui.fragments.TasksFragment">
+    tools:context=".ui.fragments.tasks.TasksFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -20,9 +20,11 @@
             android:layout_height="140dp"
             android:fitsSystemWindows="true"
             app:collapsedTitleTextAppearance="@style/TextStyle.Title"
+            app:collapsedTitleTextColor="?attr/label_primary"
             app:expandedTitleMarginBottom="52dp"
             app:expandedTitleMarginStart="60dp"
             app:expandedTitleTextAppearance="@style/TextStyle.LargeTitle"
+            app:expandedTitleTextColor="?attr/label_primary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title="@string/my_tasks"
             app:titleCollapseMode="scale"
@@ -44,6 +46,18 @@
                 android:layout_marginBottom="16dp"
                 android:button="@drawable/visibility_drawable"
                 app:buttonTint="?attr/color_blue" />
+
+            <!--It's hard to place it here nice-->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/settingsButton"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="48dp"
+                android:layout_marginBottom="12dp"
+                app:icon="@drawable/baseline_settings_24"
+                app:iconTint="?attr/color_blue" />
 
             <TextView
                 android:id="@+id/amountCompletedTextView"

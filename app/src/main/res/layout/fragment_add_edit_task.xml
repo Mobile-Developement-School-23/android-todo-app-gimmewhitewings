@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/back_primary"
-    tools:context=".ui.fragments.AddEditTaskFragment">
+    tools:context=".ui.fragments.addEdit.AddEditTaskFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -38,7 +38,8 @@
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
                 android:text="@string/save"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextStyle.Button"
                 android:textColor="?attr/color_blue" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>

@@ -5,25 +5,31 @@
         <item name="android:fontFamily">@font/roboto_family</item>
     </style>
 
-    <style name="TextStyle.LargeTitle" parent="TextStyle">
+    <style name="TextStyle.LargeTitle">
         <item name="android:fontWeight">500</item>
         <item name="android:textSize">32sp</item>
         <item name="lineHeight">38sp</item>
     </style>
 
-    <style name="TextStyle.Title" parent="TextStyle">
+    <style name="TextStyle.Title">
         <item name="android:fontWeight">500</item>
         <item name="android:textSize">20sp</item>
         <item name="lineHeight">32sp</item>
     </style>
 
-    <style name="TextStyle.Body" parent="TextStyle">
+    <style name="TextStyle.Button">
+        <item name="textAllCaps">true</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">24sp</item>
+    </style>
+
+    <style name="TextStyle.Body">
         <item name="android:fontWeight">400</item>
         <item name="android:textSize">16sp</item>
         <item name="lineHeight">20sp</item>
     </style>
 
-    <style name="TextStyle.Subhead" parent="TextStyle">
+    <style name="TextStyle.Subhead">
         <item name="fontWeight">400</item>
         <item name="android:textSize">14sp</item>
         <item name="lineHeight">20sp</item>

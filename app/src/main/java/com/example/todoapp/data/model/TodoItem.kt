@@ -1,15 +1,22 @@
 package com.example.todoapp.data.model
 
-import com.example.todoapp.data.local.entity.TodoItemEntity
-import com.example.todoapp.data.remote.models.TodoItemDto
+import com.example.todoapp.data.source.local.room.entity.TodoItemEntity
+import com.example.todoapp.data.source.remote.models.TodoItemDto
 import java.util.Date
 
-enum class Importance {
-    LOW,
-    COMMON,
-    HIGH
-}
 
+/**
+ * TodoItem - domain model
+ *
+ * @property id
+ * @property text
+ * @property importance
+ * @property isCompleted
+ * @property createdAt
+ * @property deadline
+ * @property modifiedAt
+ * @constructor Create empty TodoItem
+ */
 data class TodoItem(
     val id: String,
     var text: String,

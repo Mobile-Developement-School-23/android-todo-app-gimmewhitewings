@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">ToDo App</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_new">Новое</string>
     <string name="done_amount">Выполнено - %1$d</string>
-    <string name="my_tasks">Мои задачи</string>
+    <string name="my_tasks">Мои дела</string>
     <string name="save">Сохранить</string>
     <string name="enter_task">Что надо сделать…</string>
     <string name="priority">Важность</string>
@@ -15,4 +13,10 @@
     <string name="high">Высокий</string>
     <string name="network_error">Ошибка сети</string>
     <string name="not_synchronized">Данные не синхронизированны</string>
+    <string name="choose_importance">Выберите приоритет задачи</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="always_day">Всегда светлая</string>
+    <string name="always_night">Всегда тёмная</string>
+    <string name="system_them">Как в системе</string>
 </resources>
